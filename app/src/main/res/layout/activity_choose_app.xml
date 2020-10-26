@@ -15,27 +15,28 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tv_setup"
             android:layout_width="194dp"
             android:layout_height="54dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button2"
+            app:layout_constraintStart_toEndOf="@+id/button_back"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Choose App" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button_back"
             android:layout_width="78dp"
             android:layout_height="54dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_setup"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@+id/tv_setup"
             app:layout_constraintVertical_bias="0.0"
             tools:text="<" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_show_presets"
         android:layout_width="409dp"
         android:layout_height="675dp"
         app:layout_constraintBottom_toBottomOf="parent"

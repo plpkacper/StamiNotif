@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/pb_showstamina"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="345dp"
         android:layout_height="24dp"
@@ -20,15 +20,15 @@
         app:layout_constraintVertical_bias="0.156" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_setup"
         android:layout_width="46dp"
         android:layout_height="23dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+        app:layout_constraintBottom_toBottomOf="@+id/pb_showstamina"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="@+id/progressBar"
+        app:layout_constraintStart_toEndOf="@+id/pb_showstamina"
+        app:layout_constraintTop_toTopOf="@+id/pb_showstamina"
         tools:text="10/300" />
 
     <LinearLayout
@@ -39,24 +39,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar">
+        app:layout_constraintTop_toBottomOf="@+id/pb_showstamina">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/button_-1sta"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             tools:text="-1" />
 
         <Button
-            android:id="@+id/button6"
+            android:id="@+id/button_-5sta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             tools:text="-5" />
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/button_-10sta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

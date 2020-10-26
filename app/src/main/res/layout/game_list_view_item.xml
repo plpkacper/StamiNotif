@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/pb_showstamina"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="345dp"
         android:layout_height="24dp"
@@ -19,14 +19,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_showstamina"
         android:layout_width="46dp"
         android:layout_height="23dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+        app:layout_constraintBottom_toBottomOf="@+id/pb_showstamina"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="@+id/progressBar"
+        app:layout_constraintStart_toEndOf="@+id/pb_showstamina"
+        app:layout_constraintTop_toTopOf="@+id/pb_showstamina"
         tools:text="10/300" />
 </androidx.constraintlayout.widget.ConstraintLayout>

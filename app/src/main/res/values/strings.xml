@@ -9,4 +9,14 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="button_done">Done</string>
+    <string name="button_back_arrow"><![CDATA[<]]></string>
+    <string name="tv_set_up_app">Set Up App</string>
+    <string name="tv_stamina_recharge_time">Stamina Recharge Time</string>
+    <string name="tv_max_stamina">Max Stamina</string>
+    <string name="tv_current_stamina_value">Current Stamina Value</string>
+    <string name="button_search">Search</string>
+    <string name="iv_app_name" />
+    <string name="button_addnew">+</string>
+    <string name="tv_appnamehome">StamiNotif</string>
 </resources>
