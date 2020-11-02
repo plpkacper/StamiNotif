@@ -14,20 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_appname"
-            android:layout_width="194dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="76dp"
-            android:layout_marginLeft="76dp"
-            android:text="@string/tv_appnamehome"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_add_new"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:text="StaminaNotif" />
-
         <Button
             android:id="@+id/button_add_new"
             android:layout_width="78dp"
@@ -35,6 +21,8 @@
             android:text="@string/button_addnew"
             app:layout_constraintBottom_toBottomOf="@+id/tv_setup"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.951"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_setup" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

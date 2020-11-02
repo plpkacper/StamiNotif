@@ -1,8 +1,15 @@
 package com.example.staminotif;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChooseApp extends AppCompatActivity {
 
@@ -10,5 +17,17 @@ public class ChooseApp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_app);
+
+        List<TrackerExample> examples = new ArrayList<>();
+
+        TrackerExample example1 = new TrackerExample(0, "dokkan.png", "ExampleApp");
+
+        examples.add(example1);
+
+        RecyclerView recyclerView = findViewById(R.id.rv_show_presets);
+        RecyclerView.Adapter adapter = new AppGridRecyclerViewAdapter(getApplicationContext(), examples);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        Log.d("TEST1", "Dang");
     }
 }

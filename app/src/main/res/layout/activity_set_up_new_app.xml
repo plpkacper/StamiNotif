@@ -20,7 +20,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:text="@string/button_back_arrow"
+            android:text="@string/button_back"
             app:layout_constraintBottom_toBottomOf="@+id/tv_setup"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_setup"
