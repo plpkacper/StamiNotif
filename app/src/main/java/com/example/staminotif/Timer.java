@@ -9,24 +9,32 @@ import java.util.concurrent.TimeUnit;
 
 public class Timer {
 
-    private Date startDate;
-    private Date currentDate;
-    private SimpleDateFormat formatter;
+    private long startDate;
+    private long currentDate;
 
     Timer() {
-        this.formatter = new SimpleDateFormat("HH:mm");
-        this.startDate = new Date();
-        this.currentDate = new Date();
+        /*For testing purposes
+        String fakeDate = "2020/11/09 10:00:00";
+        this.formatter2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        try {
+            this.startDate = formatter2.parse(fakeDate);
+        } catch (ParseException e) {
+
+        }
+         */
+        this.startDate = new Date().getTime();
     }
 
-    public void getTimes() {
-        Log.d("stamina", formatter.format(startDate) + "\n" + formatter.format(currentDate));
-    }
-
-    public Long getDifference(){
-        long difference = Math.abs(currentDate.getTime() - startDate.getTime());
+    public int getDifference(){
+        this.currentDate = new Date().getTime();
+        long difference = Math.abs(currentDate - startDate);
         long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(difference);
-        Log.d("stamina", "Difference In Minutes: " + (differenceMinutes));
-        return differenceMinutes;
+        int diff = (int)differenceMinutes;
+        Log.d("stamina", "Difference In Minutes: " + (diff));
+        return diff;
+    }
+
+    public void updateDate() {
+        this.startDate = new Date().getTime();
     }
 }

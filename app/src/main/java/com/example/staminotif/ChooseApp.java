@@ -1,5 +1,6 @@
 package com.example.staminotif;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,9 +19,12 @@ public class ChooseApp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_app);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Choose A Template");
+
         List<TrackerExample> examples = new ArrayList<>();
 
-        TrackerExample example1 = new TrackerExample(0, "dokkan.png", "ExampleApp");
+        TrackerExample example1 = new TrackerExample(5, "dokkan.png", "Dokkan");
 
         examples.add(example1);
 

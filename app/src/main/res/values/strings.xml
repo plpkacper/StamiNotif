@@ -19,4 +19,5 @@
     <string name="iv_app_name" />
     <string name="button_addnew">Add</string>
     <string name="tv_appnamehome">StamiNotif</string>
+    <string name="preferences_file" />
 </resources>

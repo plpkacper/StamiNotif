@@ -1,17 +1,21 @@
 package com.example.staminotif;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcel;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Set;
 
 public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecyclerViewAdapter.TrackerExampleViewHolder> {
 
@@ -40,9 +44,8 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
 
         TextView appName = holder.TrackerExampleView.findViewById(R.id.tv_example_name);
         appName.setText(examplesList.get(position).getName());
-        ImageView appIcon = holder.TrackerExampleView.findViewById(R.id.ib_background_icon);
+        ImageView appIcon = holder.TrackerExampleView.findViewById(R.id.iv_background_icon);
         appIcon.setImageResource(R.drawable.dokkan);
-
     }
 
     @Override
@@ -55,7 +58,6 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
         private View TrackerExampleView;
         private AppGridRecyclerViewAdapter adapter;
 
-
         public TrackerExampleViewHolder(@NonNull View TrackerExampleView, AppGridRecyclerViewAdapter adapter) {
             super(TrackerExampleView);
             this.TrackerExampleView = TrackerExampleView;
@@ -66,6 +68,12 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
         @Override
         public void onClick(View view) {
 
+            Log.d("TEST1", "onClick: WE DID IT In the add screen");
+            Log.d("TEST1", "onClick: " + getAdapterPosition());
+            Intent intent = new Intent(context, SetUpNewApp.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("trackerExample", examplesList.get(getAdapterPosition()));
+            context.startActivity(intent);
         }
     }
 }

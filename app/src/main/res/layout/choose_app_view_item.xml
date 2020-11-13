@@ -5,28 +5,26 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/ib_background_icon"
+    <ImageView
+        android:id="@+id/iv_background_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:cropToPadding="false"
         android:scaleType="fitCenter"
-        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/dokkan"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/dokkan" />
 
     <TextView
         android:id="@+id/tv_example_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/iv_app_name"
-        app:layout_constraintBottom_toBottomOf="@+id/ib_background_icon"
-        app:layout_constraintEnd_toEndOf="@+id/ib_background_icon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ib_background_icon" />
+        app:layout_constraintBottom_toBottomOf="@+id/iv_background_icon"
+        app:layout_constraintEnd_toEndOf="@+id/iv_background_icon"
+        app:layout_constraintStart_toStartOf="@+id/iv_background_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_background_icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

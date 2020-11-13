@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SetUpNewApp">
+        <activity android:name=".SetUpNewApp" android:parentActivityName= ".ChooseApp">
         </activity>
         <activity android:name=".ChooseApp" android:parentActivityName= ".MainActivity"/>
         <activity android:name=".MainActivity">
