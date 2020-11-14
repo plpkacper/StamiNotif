@@ -34,7 +34,6 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
 
         View itemView = LayoutInflater.from(context).inflate(R.layout.choose_app_view_item, parent, false);
         TrackerExampleViewHolder viewHolder = new TrackerExampleViewHolder(itemView, this);
-        Log.d("TEST1", "onCreateViewHolder: MAKING STUFF HAPPEN");
 
         return viewHolder;
     }
@@ -67,9 +66,6 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
 
         @Override
         public void onClick(View view) {
-
-            Log.d("TEST1", "onClick: WE DID IT In the add screen");
-            Log.d("TEST1", "onClick: " + getAdapterPosition());
             Intent intent = new Intent(context, SetUpNewApp.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("trackerExample", examplesList.get(getAdapterPosition()));

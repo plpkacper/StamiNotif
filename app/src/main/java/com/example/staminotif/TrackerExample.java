@@ -9,9 +9,9 @@ public class TrackerExample implements Parcelable {
     private int currSta;
     private int recharge;
     private int maxSta;
-    private String imageName;
+    private int imageName;
 
-    public TrackerExample(int recharge, String imageName, String name) {
+    public TrackerExample(int recharge, int imageName, String name) {
         this.name = name;
         this.currSta = 0;
         this.recharge = recharge;
@@ -43,7 +43,7 @@ public class TrackerExample implements Parcelable {
         return name;
     }
 
-    public String getImageName() {
+    public int getImageResource() {
         return imageName;
     }
 
@@ -52,7 +52,7 @@ public class TrackerExample implements Parcelable {
         currSta = in.readInt();
         recharge = in.readInt();
         maxSta = in.readInt();
-        imageName = in.readString();
+        imageName = in.readInt();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TrackerExample implements Parcelable {
         dest.writeInt(currSta);
         dest.writeInt(recharge);
         dest.writeInt(maxSta);
-        dest.writeString(imageName);
+        dest.writeInt(imageName);
     }
 
     @Override

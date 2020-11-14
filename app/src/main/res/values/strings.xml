@@ -20,4 +20,10 @@
     <string name="button_addnew">Add</string>
     <string name="tv_appnamehome">StamiNotif</string>
     <string name="preferences_file" />
+    <string name="name">Name Of App</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_delete">Delete</string>
+    <string name="decrement1">-1</string>
+    <string name="decrement5">-5</string>
+    <string name="decrement10">-10</string>
 </resources>

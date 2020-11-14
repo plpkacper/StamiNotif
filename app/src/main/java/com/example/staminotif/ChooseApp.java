@@ -24,7 +24,7 @@ public class ChooseApp extends AppCompatActivity {
 
         List<TrackerExample> examples = new ArrayList<>();
 
-        TrackerExample example1 = new TrackerExample(5, "dokkan.png", "Dokkan");
+        TrackerExample example1 = new TrackerExample(5, R.drawable.dokkan, "Dokkan");
 
         examples.add(example1);
 
@@ -32,6 +32,5 @@ public class ChooseApp extends AppCompatActivity {
         RecyclerView.Adapter adapter = new AppGridRecyclerViewAdapter(getApplicationContext(), examples);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        Log.d("TEST1", "Dang");
     }
 }

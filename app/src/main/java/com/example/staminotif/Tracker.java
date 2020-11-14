@@ -1,10 +1,10 @@
 package com.example.staminotif;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
-import androidx.annotation.LongDef;
-
-public class Tracker {
+public class Tracker implements Parcelable {
 
     private int currSta;
     private int maxSta;
@@ -13,6 +13,25 @@ public class Tracker {
     private String name;
     public Timer timer;
     public boolean atMax;
+    public int imageResource;
+    public boolean expanded;
+
+    Tracker(String name, int currSta, int maxSta, int recharge, int imageResource) {
+        this.name = name;
+        this.currSta = currSta;
+        this.maxSta = maxSta;
+        this.recharge = recharge;
+        this.modulo = 0;
+        this.timer = new Timer();
+        this.imageResource = imageResource;
+        if (this.currSta == this.maxSta) {
+            this.atMax = true;
+        }
+        else {
+            this.atMax = false;
+        }
+        this.expanded = false;
+    }
 
     Tracker(String name, int currSta, int maxSta, int recharge) {
         this.name = name;
@@ -21,6 +40,7 @@ public class Tracker {
         this.recharge = recharge;
         this.modulo = 0;
         this.timer = new Timer();
+        this.imageResource = 0;
         if (this.currSta == this.maxSta) {
             this.atMax = true;
         }
@@ -30,15 +50,39 @@ public class Tracker {
     }
 
     public void decrementSta1() {
-        this.currSta--;
+        if (this.currSta - 1 < 0) {
+            this.currSta = 0;
+        }
+        else {
+            this.currSta--;
+        }
+        if (this.atMax) {
+            this.timer.updateDate();
+        }
         this.atMax = false;
     }
     public void decrementSta5() {
-        this.currSta -= 5;
+        if (this.currSta - 5 < 0) {
+            this.currSta = 0;
+        }
+        else {
+            this.currSta -= 5;
+        }
+        if (this.atMax) {
+            this.timer.updateDate();
+        }
         this.atMax = false;
     }
     public void decrementSta10() {
-        this.currSta -= 10;
+        if (this.currSta - 10 < 0) {
+            this.currSta = 0;
+        }
+        else {
+            this.currSta -= 10;
+        }
+        if (this.atMax) {
+            this.timer.updateDate();
+        }
         this.atMax = false;
     }
 
@@ -56,7 +100,17 @@ public class Tracker {
     }
     public Timer getTimer() {return timer;}
     public String getName() { return this.name; }
+    public int getImageResource() { return imageResource; }
 
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
+    public void setImageResource(int imageResource) { this.imageResource = imageResource; }
     public void setCurrSta(int currSta) {
         this.currSta = currSta;
     }
@@ -88,37 +142,73 @@ public class Tracker {
                 '}';
     }
 
-    public void updateCounter() {
+    public boolean updateCounter() {
+        boolean changed = false;
         if (!this.atMax) {
             int diff = timer.getDifference() + this.modulo;
-            this.modulo = diff % recharge;
             int toAdd = (int)Math.floor(diff/recharge);
-            if (this.currSta + toAdd >= this.maxSta) {
-                this.currSta = this.maxSta;
-                this.atMax = true;
-                //Stamina is at max send notification
-            }
-            else {
-                this.currSta += (int)Math.floor(diff/this.recharge);
-                this.timer.updateDate();
-                Log.d("stamina", "Stamina updated to: " + this.currSta);
+            if (toAdd >= 1) {
+                if (this.currSta + toAdd >= this.maxSta) {
+                    this.currSta = this.maxSta;
+                    this.atMax = true;
+                    changed = true;
+                    //Stamina is at max send notification
+                }
+                else {
+                    changed = true;
+                    this.currSta += (int)Math.floor(diff/this.recharge);
+                    this.modulo = diff % recharge;
+                    this.timer.updateDate();
+                    //Log.d("stamina", "Stamina updated to: " + this.currSta);
+                }
             }
         }
+        else {
+            timer.updateDate();
+        }
+        return changed;
     }
+
+    protected Tracker(Parcel in) {
+        currSta = in.readInt();
+        maxSta = in.readInt();
+        recharge = in.readInt();
+        modulo = in.readInt();
+        name = in.readString();
+        timer = (Timer) in.readValue(Timer.class.getClassLoader());
+        atMax = in.readByte() != 0x00;
+        imageResource = in.readInt();
+        expanded = in.readByte() != 0x00;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(currSta);
+        dest.writeInt(maxSta);
+        dest.writeInt(recharge);
+        dest.writeInt(modulo);
+        dest.writeString(name);
+        dest.writeValue(timer);
+        dest.writeByte((byte) (atMax ? 0x01 : 0x00));
+        dest.writeInt(imageResource);
+        dest.writeByte((byte) (expanded ? 0x01 : 0x00));
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Tracker> CREATOR = new Parcelable.Creator<Tracker>() {
+        @Override
+        public Tracker createFromParcel(Parcel in) {
+            return new Tracker(in);
+        }
+
+        @Override
+        public Tracker[] newArray(int size) {
+            return new Tracker[size];
+        }
+    };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
