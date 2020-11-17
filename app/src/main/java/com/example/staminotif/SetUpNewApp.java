@@ -5,14 +5,24 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.List;
 
 public class SetUpNewApp extends AppCompatActivity {
 
@@ -20,7 +30,10 @@ public class SetUpNewApp extends AppCompatActivity {
     private EditText maxSta;
     private EditText currSta;
     private EditText name;
-    private ImageView imageName;
+    private ImageView imageView;
+    private String imageDir;
+    private EditText searchBox;
+    private Button search;
     private Boolean edit;
     private int position;
 
@@ -82,8 +95,8 @@ public class SetUpNewApp extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please Set Current Stamina", Toast.LENGTH_SHORT).show();
             exceptionCounter++;
         }
-        if (imageName.getDrawable() != null) {
-            tracker.putInt("imageResource", imageName.getId());
+        if (imageDir != "") {
+            tracker.putString("imageResource", imageDir);
         }
         if (edit) {
             tracker.putInt("replace", position);
@@ -106,8 +119,19 @@ public class SetUpNewApp extends AppCompatActivity {
         rechargeTime = findViewById(R.id.et_staminarecharge);
         maxSta = findViewById(R.id.et_maxsta);
         currSta = findViewById(R.id.et_currsta);
-        imageName = findViewById(R.id.iv_app_icon);
+        imageView = findViewById(R.id.iv_app_icon);
+        search = findViewById(R.id.button_search);
+        searchBox = findViewById(R.id.et_search);
         ActionBar actionBar = getSupportActionBar();
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchBox.getText().toString() != "") {
+                    lookForApp(searchBox.getText().toString());
+                }
+            }
+        });
 
         if (getIntent().getExtras().containsKey("trackerExample")) {
             TrackerExample example = getIntent().getExtras().getParcelable("trackerExample");
@@ -129,8 +153,9 @@ public class SetUpNewApp extends AppCompatActivity {
                 name.setText(example.getName());
             }
             //Not the right way to do it I imagine
-            if (example.getImageResource() > 0) {
-                imageName.setImageResource(example.getImageResource());
+            if (example.getImageResource() != "") {
+                setImage(example.getImageResource());
+                imageDir = example.getImageResource();
             }
         }
         else if (getIntent().getExtras().containsKey("tracker")) {
@@ -156,14 +181,72 @@ public class SetUpNewApp extends AppCompatActivity {
             if (!tracker.getName().equals(null)) {
                 name.setText(tracker.getName());
             }
-            //Not the right way to do it I imagine
-            /*
-            if (tracker.getImageResource() > 0) {
-                imageName.setImageResource(tracker.getImageResource());
+            if (tracker.getImageResource() != "") {
+                setImage(tracker.getImageResource());
+                imageDir = tracker.getImageResource();
             }
-             */
         }
 
+    }
 
+    //FIX
+    private void setImage(String dir) {
+        Log.d("stamina", "setImage: " + dir);
+        Drawable d = Drawable.createFromPath(dir);
+        imageView.setImageDrawable(d);
+    }
+
+    private void lookForApp(String text) {
+        Log.d("stamina", "lookForApp: " + text);
+        int flags = PackageManager.GET_META_DATA |
+                PackageManager.GET_SHARED_LIBRARY_FILES |
+                PackageManager.GET_UNINSTALLED_PACKAGES;
+        final PackageManager pm = getPackageManager();
+        //get a list of installed apps.
+        List<ApplicationInfo> packages = pm.getInstalledApplications(flags);
+
+        for (ApplicationInfo packageInfo : packages) {
+            if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1) {
+                //Log.d("stamina", "System App");
+            }
+            else {
+                Log.d("stamina", "User Installed App");
+                Log.d("stamina", "Installed package :" + packageInfo.packageName);
+                Log.d("stamina", "Name : " + pm.getApplicationLabel(packageInfo));
+                if (pm.getApplicationLabel(packageInfo).toString().toLowerCase().contains(text.toLowerCase())) {
+                    try {
+                        Drawable drawable = getApplicationContext().getPackageManager().getApplicationIcon(packageInfo.packageName);
+                        imageView.setImageDrawable(drawable);
+
+                        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        drawable.draw(canvas);
+                        try {
+                            File file = new File(getFilesDir(), pm.getApplicationLabel(packageInfo) + "Icon.png");
+
+                            FileOutputStream fOut = new FileOutputStream(file);
+
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+                            fOut.flush();
+                            fOut.close();
+                            imageDir = getFilesDir() + File.separator + pm.getApplicationLabel(packageInfo) + "Icon.png";
+
+                            Log.d("stamina", "Image size is: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+                            name.setText(pm.getApplicationLabel(packageInfo));
+                            searchBox.setText(pm.getApplicationLabel(packageInfo));
+                            Log.d("stamina", "FILE SAVE SUCCEEDED");
+                        }
+                        catch (Exception e) {
+                            Log.d("stamina", "FILE SAVE FAILED");
+                        }
+
+                    }
+                    catch (PackageManager.NameNotFoundException e) {
+                        Toast.makeText(getApplicationContext(), "App not found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
     }
 }

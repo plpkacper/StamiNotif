@@ -12,6 +12,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        createDirectory();
+
         //Made custom class with 3 functions that are often used by other classes
         trackerUpdater = new TrackerUpdater(getApplicationContext());
 
@@ -99,10 +103,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startWorker();
     }
 
+    private void createDirectory() {
+        File mediaStorageDir = new File(getFilesDir(), "/.stamiNotif");
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("stamina", "failed to create directory");
+            }
+        }
+    }
+
     private void addApp(Bundle bundle) {
         Tracker tracker;
         try {
-            tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getInt("imageResource", 0));
+            tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""));
         }
         catch (RuntimeException e) {
             tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1));

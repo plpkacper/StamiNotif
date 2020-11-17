@@ -5,11 +5,22 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <View
+        android:id="@+id/darkener"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_background_icon"
+        app:layout_constraintEnd_toEndOf="@+id/iv_background_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_background_icon" />
+
     <ImageView
         android:id="@+id/iv_background_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:alpha="0.7"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +33,11 @@
         android:id="@+id/tv_example_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/iv_app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/iv_background_icon"
         app:layout_constraintEnd_toEndOf="@+id/iv_background_icon"
         app:layout_constraintStart_toStartOf="@+id/iv_background_icon"

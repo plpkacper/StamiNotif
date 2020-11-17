@@ -104,10 +104,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="text" />
 
         <Button
-            android:id="@+id/textbox_search"
+            android:id="@+id/button_search"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -146,6 +146,8 @@
         android:id="@+id/iv_app_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

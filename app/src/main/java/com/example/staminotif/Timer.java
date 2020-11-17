@@ -32,7 +32,7 @@ public class Timer implements Parcelable {
         long difference = Math.abs(currentDate - startDate);
         long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(difference);
         int diff = (int)differenceMinutes;
-        Log.d("stamina", "Difference In Minutes: " + (diff));
+        //Log.d("stamina", "Difference In Minutes: " + (diff));
         return diff;
     }
 

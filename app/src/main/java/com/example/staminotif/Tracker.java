@@ -13,10 +13,10 @@ public class Tracker implements Parcelable {
     private String name;
     public Timer timer;
     public boolean atMax;
-    public int imageResource;
+    public String imageResource;
     public boolean expanded;
 
-    Tracker(String name, int currSta, int maxSta, int recharge, int imageResource) {
+    Tracker(String name, int currSta, int maxSta, int recharge, String imageResource) {
         this.name = name;
         this.currSta = currSta;
         this.maxSta = maxSta;
@@ -40,7 +40,7 @@ public class Tracker implements Parcelable {
         this.recharge = recharge;
         this.modulo = 0;
         this.timer = new Timer();
-        this.imageResource = 0;
+        this.imageResource = "";
         if (this.currSta == this.maxSta) {
             this.atMax = true;
         }
@@ -100,7 +100,7 @@ public class Tracker implements Parcelable {
     }
     public Timer getTimer() {return timer;}
     public String getName() { return this.name; }
-    public int getImageResource() { return imageResource; }
+    public String getImageResource() { return imageResource; }
 
     public boolean isExpanded() {
         return expanded;
@@ -110,7 +110,7 @@ public class Tracker implements Parcelable {
         this.expanded = expanded;
     }
 
-    public void setImageResource(int imageResource) { this.imageResource = imageResource; }
+    public void setImageResource(String imageResource) { this.imageResource = imageResource; }
     public void setCurrSta(int currSta) {
         this.currSta = currSta;
     }
@@ -177,7 +177,7 @@ public class Tracker implements Parcelable {
         name = in.readString();
         timer = (Timer) in.readValue(Timer.class.getClassLoader());
         atMax = in.readByte() != 0x00;
-        imageResource = in.readInt();
+        imageResource = in.readString();
         expanded = in.readByte() != 0x00;
     }
 
@@ -195,7 +195,7 @@ public class Tracker implements Parcelable {
         dest.writeString(name);
         dest.writeValue(timer);
         dest.writeByte((byte) (atMax ? 0x01 : 0x00));
-        dest.writeInt(imageResource);
+        dest.writeString(imageResource);
         dest.writeByte((byte) (expanded ? 0x01 : 0x00));
     }
 

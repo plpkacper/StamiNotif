@@ -24,7 +24,7 @@ public class ChooseApp extends AppCompatActivity {
 
         List<TrackerExample> examples = new ArrayList<>();
 
-        TrackerExample example1 = new TrackerExample(5, R.drawable.dokkan, "Dokkan");
+        TrackerExample example1 = new TrackerExample(5, "res/drawable/dokkan.png", "Dokkan Battle");
 
         examples.add(example1);
 

@@ -1,6 +1,7 @@
 package com.example.staminotif;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -49,6 +51,9 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
 
     @Override
     public void onBindViewHolder(@NonNull TrackerViewHolder holder, final int position) {
+        ImageView imageView = holder.trackerView.findViewById(R.id.iv_icon);
+        Drawable d = Drawable.createFromPath(trackerList.get(position).getImageResource());
+        imageView.setImageDrawable(d);
         TextView appName = holder.trackerView.findViewById(R.id.tv_item_app_name);
         appName.setText(trackerList.get(position).getName());
         ProgressBar progressBar = holder.trackerView.findViewById(R.id.pb_showstamina);
@@ -129,7 +134,6 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
 
         @Override
         public boolean onLongClick(View view) {
-            Log.d("stamina", "onLongClick: Long Clicked on " + getAdapterPosition());
 
             PopupMenu popupMenu = new PopupMenu(context, trackerView);
             popupMenu.getMenuInflater().inflate(R.menu.main_recyclerview_popup_menu, popupMenu.getMenu());
