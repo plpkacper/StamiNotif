@@ -1,6 +1,7 @@
 package com.example.staminotif;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
@@ -51,6 +52,13 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
 
     @Override
     public void onBindViewHolder(@NonNull TrackerViewHolder holder, final int position) {
+
+        if (trackerList.get(position).isFavourite()) {
+            holder.trackerView.setBackgroundColor(Color.parseColor("#a1c5ff"));
+        }
+        else {
+            holder.trackerView.setBackgroundColor(Color.parseColor("#ffffff"));
+        }
         ImageView imageView = holder.trackerView.findViewById(R.id.iv_icon);
         Drawable d = Drawable.createFromPath(trackerList.get(position).getImageResource());
         imageView.setImageDrawable(d);
@@ -70,7 +78,6 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             @Override
             public void onClick(View view) {
                 trackerList.get(position).decrementSta1();
-                trackerList.get(position).setExpanded(true);
                 notifyItemChanged(position);
                 trackerUpdater.saveToPrefs();
                 trackerUpdater.updateTrackers();
@@ -81,7 +88,6 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             @Override
             public void onClick(View view) {
                 trackerList.get(position).decrementSta5();
-                trackerList.get(position).setExpanded(true);
                 notifyItemChanged(position);
                 trackerUpdater.saveToPrefs();
                 trackerUpdater.updateTrackers();
@@ -92,17 +98,11 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             @Override
             public void onClick(View view) {
                 trackerList.get(position).decrementSta10();
-                trackerList.get(position).setExpanded(true);
                 notifyItemChanged(position);
                 trackerUpdater.saveToPrefs();
                 trackerUpdater.updateTrackers();
             }
         });
-
-        trackerList = trackerUpdater.updateTrackers();
-        boolean isExpanded = trackerList.get(position).isExpanded();
-        Log.d("test", position + " " + isExpanded);
-        holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -127,9 +127,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
 
         @Override
         public void onClick(View view) {
-            trackerList.get(getAdapterPosition()).setExpanded(!trackerList.get(getAdapterPosition()).isExpanded());
-            notifyItemChanged(getAdapterPosition());
-            trackerUpdater.saveToPrefs();
+
         }
 
         @Override
@@ -147,6 +145,12 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
                     }
                     else if (title.equals("Delete")) {
                         trackerList = trackerUpdater.delete(getAdapterPosition());
+                        adapter.notifyDataSetChanged();
+                    }
+                    else if (title.equals("Favourite")) {
+                        trackerList = trackerUpdater.favourite(getAdapterPosition());
+                        trackerUpdater.saveToPrefs();
+                        trackerList = trackerUpdater.updateTrackers();
                         adapter.notifyDataSetChanged();
                     }
                     return false;

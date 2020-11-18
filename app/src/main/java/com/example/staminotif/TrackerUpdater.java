@@ -84,10 +84,22 @@ public class TrackerUpdater {
     }
 
     public List<Tracker> delete(int adapterPosition) {
-        Log.d("stamina", "deleting the tracker");
         trackers.remove(adapterPosition);
         saveToPrefs();
         decodePrefs();
+        return trackers;
+    }
+
+    public List<Tracker> favourite(int adapterPosition) {
+        updateTrackers();
+        for (int i = 0; i < trackers.size(); i++) {
+            if (i != adapterPosition) {
+                trackers.get(i).setFavourite(false);
+            }
+            else {
+                trackers.get(adapterPosition).setFavourite(!trackers.get(adapterPosition).isFavourite());
+            }
+        }
         return trackers;
     }
 }

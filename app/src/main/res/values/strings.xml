@@ -25,4 +25,9 @@
     <string name="decrement5">-5</string>
     <string name="decrement10">-10</string>
     <string name="appexamplename">appName</string>
+    <string name="notif_name">StamiNotif</string>
+    <string name="channel_name_perm">Favourite Notification</string>
+    <string name="channel_description_perm">This notification stays around to update the users favourite tracker.</string>
+    <string name="channel_name">Full Notification</string>
+    <string name="channel_description">This notification pings when an app has full stamina.</string>
 </resources>

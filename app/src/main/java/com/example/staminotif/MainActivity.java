@@ -115,11 +115,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addApp(Bundle bundle) {
         Tracker tracker;
-        try {
-            tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""));
+        if (bundle.containsKey("favourite")) {
+            try {
+                tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""), bundle.getBoolean("favourite"));
+            }
+            catch (RuntimeException e) {
+                tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getBoolean("favourite"));
+            }
         }
-        catch (RuntimeException e) {
-            tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1));
+        else {
+            try {
+                tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""));
+            }
+            catch (RuntimeException e) {
+                tracker = new Tracker(bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1));
+            }
         }
 
         if (bundle.containsKey("replace")) {
@@ -132,27 +142,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startWorker() {
-        //Change this to executorService for scheduled execution
-        /*
-        final Handler handler = new Handler();
-        final Thread r = new Thread() {
-            public void run() {
-                //This line is just so that the notify data change will work. As the adapter itself only watches changes in list length, so now that the list is empty and then filled again, it can be changed.
-                trackers.clear();
-                //Populating & updating the tracker list
-                trackers = trackerUpdater.updateTrackers();
-                //Notify the recyclerview adapter that the data inside the list it is displaying has changed
-                //adapter.notifyDataSetChanged();
-                for (int i = 0; i < trackers.size(); i++) {
-                    adapter.notifyItemChanged(i);
-                }
-                // Call handler function that runs this thread every 60 seconds
-                handler.postDelayed(this, 60000);
-            }
-        };
-        r.start();
-         */
-
         executorService = Executors.newScheduledThreadPool(1);
         ScheduledFuture scheduledFuture = executorService.schedule(new Runnable() {
             @Override
@@ -173,6 +162,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Kills trackerWorker instance if one exists. Start scheduled executor service
+        WorkManager.getInstance(getApplicationContext()).cancelUniqueWork("tracker");
+        startWorker();
     }
 
     @Override

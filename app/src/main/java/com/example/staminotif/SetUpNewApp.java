@@ -35,6 +35,7 @@ public class SetUpNewApp extends AppCompatActivity {
     private EditText searchBox;
     private Button search;
     private Boolean edit;
+    private Boolean favourite;
     private int position;
 
     @Override
@@ -100,6 +101,7 @@ public class SetUpNewApp extends AppCompatActivity {
         }
         if (edit) {
             tracker.putInt("replace", position);
+            tracker.putBoolean("favourite", favourite);
         }
         if (exceptionCounter == 0) {
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
@@ -114,6 +116,7 @@ public class SetUpNewApp extends AppCompatActivity {
         setContentView(R.layout.activity_set_up_new_app);
 
         edit = false;
+        favourite = false;
 
         name = findViewById(R.id.et_name);
         rechargeTime = findViewById(R.id.et_staminarecharge);
@@ -153,9 +156,9 @@ public class SetUpNewApp extends AppCompatActivity {
                 name.setText(example.getName());
             }
             //Not the right way to do it I imagine
-            if (example.getImageResource() != "") {
-                setImage(example.getImageResource());
-                imageDir = example.getImageResource();
+            if (example.getImageResource() != 0) {
+                imageView.setImageResource(example.getImageResource());
+                saveImage(example.getName());
             }
         }
         else if (getIntent().getExtras().containsKey("tracker")) {
@@ -185,8 +188,35 @@ public class SetUpNewApp extends AppCompatActivity {
                 setImage(tracker.getImageResource());
                 imageDir = tracker.getImageResource();
             }
+            if (tracker.isFavourite()) {
+                favourite = true;
+            }
         }
 
+    }
+
+    private void saveImage(String name) {
+        imageView.setDrawingCacheEnabled(true);
+        Drawable drawable = imageView.getDrawable();
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        try {
+            File file = new File(getFilesDir(), name + "Icon.png");
+
+            FileOutputStream fOut = new FileOutputStream(file);
+
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            imageDir = getFilesDir() + File.separator + name + "Icon.png";
+            Log.d("stamina", "FILE SAVE SUCCEEDED");
+        }
+        catch (Exception e) {
+            Log.d("stamina", "FILE SAVE FAILED");
+        }
     }
 
     //FIX
@@ -217,30 +247,7 @@ public class SetUpNewApp extends AppCompatActivity {
                     try {
                         Drawable drawable = getApplicationContext().getPackageManager().getApplicationIcon(packageInfo.packageName);
                         imageView.setImageDrawable(drawable);
-
-                        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-                        Canvas canvas = new Canvas(bitmap);
-                        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                        drawable.draw(canvas);
-                        try {
-                            File file = new File(getFilesDir(), pm.getApplicationLabel(packageInfo) + "Icon.png");
-
-                            FileOutputStream fOut = new FileOutputStream(file);
-
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-                            fOut.flush();
-                            fOut.close();
-                            imageDir = getFilesDir() + File.separator + pm.getApplicationLabel(packageInfo) + "Icon.png";
-
-                            Log.d("stamina", "Image size is: " + bitmap.getWidth() + "x" + bitmap.getHeight());
-                            name.setText(pm.getApplicationLabel(packageInfo));
-                            searchBox.setText(pm.getApplicationLabel(packageInfo));
-                            Log.d("stamina", "FILE SAVE SUCCEEDED");
-                        }
-                        catch (Exception e) {
-                            Log.d("stamina", "FILE SAVE FAILED");
-                        }
-
+                        saveImage(pm.getApplicationLabel(packageInfo).toString());
                     }
                     catch (PackageManager.NameNotFoundException e) {
                         Toast.makeText(getApplicationContext(), "App not found", Toast.LENGTH_SHORT).show();

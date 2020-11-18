@@ -9,14 +9,14 @@ public class TrackerExample implements Parcelable {
     private int currSta;
     private int recharge;
     private int maxSta;
-    private String imageName;
+    private int imageRef;
 
-    public TrackerExample(int recharge, String imageName, String name) {
+    public TrackerExample(int recharge, int imageRef, String name) {
         this.name = name;
         this.currSta = 0;
         this.recharge = recharge;
         this.maxSta = 0;
-        this.imageName = imageName;
+        this.imageRef = imageRef;
     }
 
     public static final Creator<TrackerExample> CREATOR = new Creator<TrackerExample>() {
@@ -43,8 +43,8 @@ public class TrackerExample implements Parcelable {
         return name;
     }
 
-    public String getImageResource() {
-        return imageName;
+    public int getImageResource() {
+        return imageRef;
     }
 
     protected TrackerExample(Parcel in) {
@@ -52,7 +52,7 @@ public class TrackerExample implements Parcelable {
         currSta = in.readInt();
         recharge = in.readInt();
         maxSta = in.readInt();
-        imageName = in.readString();
+        imageRef = in.readInt();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TrackerExample implements Parcelable {
         dest.writeInt(currSta);
         dest.writeInt(recharge);
         dest.writeInt(maxSta);
-        dest.writeString(imageName);
+        dest.writeInt(imageRef);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class TrackerExample implements Parcelable {
                 ", currSta=" + currSta +
                 ", recharge=" + recharge +
                 ", maxSta=" + maxSta +
-                ", imageName='" + imageName + '\'' +
+                ", imageName='" + imageRef + '\'' +
                 '}';
     }
 }
