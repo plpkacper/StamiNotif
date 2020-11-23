@@ -2,7 +2,9 @@ package com.example.staminotif;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
@@ -35,16 +37,19 @@ public class TrackerWorker extends Worker {
     int notificationId;
     NotificationManager notifyMgr;
     boolean permSent;
+    PendingIntent pendingIntent;
 
     public TrackerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.trackerUpdater = new TrackerUpdater(context);
-        this.trackerUpdater.decodePrefs();
+        this.trackerUpdater.getFromDatabase();
         this.context = context;
         this.faveId = 0;
         this.notificationId = 1;
         this.sentTrackers = new ArrayList<>();
         this.permSent = false;
+        Intent intent = new Intent(context, MainActivity.class);
+        this.pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         Log.d("stamina", "Started trackerWorker");
         createNotificationChannels();
     }
@@ -73,7 +78,10 @@ public class TrackerWorker extends Worker {
                         .setSmallIcon(R.drawable.notification_icon)
                         .setContentTitle(trackers.get(i).getName())
                         .setContentText(trackers.get(i).getName() + " is now full")
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setSound(null)
+                        .setContentIntent(pendingIntent)
+                        .setVibrate(null);
                 if (notifyMgr == null) {
                     notificationManagerPerm.notify(notificationId, builder.build());
                 }
@@ -94,7 +102,9 @@ public class TrackerWorker extends Worker {
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(tracker.getName())
                 .setContentText(tracker.getCurrSta() + "/" + tracker.getMaxSta())
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationManager.IMPORTANCE_MIN)
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                .setContentIntent(pendingIntent)
                 .setOngoing(true);
 
         if (!permSent) {
@@ -132,11 +142,15 @@ public class TrackerWorker extends Worker {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = context.getString(R.string.channel_name_perm);
             String description = context.getString(R.string.channel_description_perm);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(PERMANENT_ID, name, importance);
-            channel.setDescription(description);
+            int importance = NotificationManager.IMPORTANCE_NONE;
+            NotificationChannel channel1 = new NotificationChannel(PERMANENT_ID, name, importance);
+            channel1.setDescription(description);
+            channel1.setShowBadge(false);
+            channel1.setSound(null, null);
+            channel1.enableVibration(false);
+            channel1.setLockscreenVisibility(NotificationManager.IMPORTANCE_NONE);
             notificationManagerPerm = context.getSystemService(NotificationManager.class);
-            notificationManagerPerm.createNotificationChannel(channel);
+            notificationManagerPerm.createNotificationChannel(channel1);
         }
         else {
             notifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);

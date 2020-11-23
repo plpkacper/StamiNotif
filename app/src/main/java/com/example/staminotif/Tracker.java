@@ -4,9 +4,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "trackers")
 public class Tracker implements Parcelable {
+
+    @NonNull
+    @PrimaryKey(autoGenerate = true)
+    private int tID;
 
     private int currSta;
     private int maxSta;
@@ -19,7 +28,8 @@ public class Tracker implements Parcelable {
     public boolean favourite;
     public boolean maxSent;
 
-    Tracker(String name, int currSta, int maxSta, int recharge, String imageResource) {
+    Tracker(int tID, String name, int currSta, int maxSta, int recharge, String imageResource, boolean favourite) {
+        this.tID = tID;
         this.name = name;
         this.currSta = currSta;
         this.maxSta = maxSta;
@@ -27,57 +37,6 @@ public class Tracker implements Parcelable {
         this.modulo = 0;
         this.timer = new Timer();
         this.imageResource = imageResource;
-        if (this.currSta == this.maxSta) {
-            this.atMax = true;
-        }
-        else {
-            this.atMax = false;
-        }
-        this.favourite = false;
-    }
-
-    Tracker(String name, int currSta, int maxSta, int recharge) {
-        this.name = name;
-        this.currSta = currSta;
-        this.maxSta = maxSta;
-        this.recharge = recharge;
-        this.modulo = 0;
-        this.timer = new Timer();
-        this.imageResource = "";
-        if (this.currSta == this.maxSta) {
-            this.atMax = true;
-        }
-        else {
-            this.atMax = false;
-        }
-        this.favourite = false;
-    }
-
-    Tracker(String name, int currSta, int maxSta, int recharge, String imageResource, boolean favourite) {
-        this.name = name;
-        this.currSta = currSta;
-        this.maxSta = maxSta;
-        this.recharge = recharge;
-        this.modulo = 0;
-        this.timer = new Timer();
-        this.imageResource = imageResource;
-        if (this.currSta == this.maxSta) {
-            this.atMax = true;
-        }
-        else {
-            this.atMax = false;
-        }
-        this.favourite = favourite;
-    }
-
-    Tracker(String name, int currSta, int maxSta, int recharge, boolean favourite) {
-        this.name = name;
-        this.currSta = currSta;
-        this.maxSta = maxSta;
-        this.recharge = recharge;
-        this.modulo = 0;
-        this.timer = new Timer();
-        this.imageResource = "";
         if (this.currSta == this.maxSta) {
             this.atMax = true;
         }
@@ -99,6 +58,7 @@ public class Tracker implements Parcelable {
         }
         this.atMax = false;
     }
+
     public void decrementSta5() {
         if (this.currSta - 5 < 0) {
             this.currSta = 0;
@@ -111,6 +71,7 @@ public class Tracker implements Parcelable {
         }
         this.atMax = false;
     }
+
     public void decrementSta10() {
         if (this.currSta - 10 < 0) {
             this.currSta = 0;
@@ -136,6 +97,7 @@ public class Tracker implements Parcelable {
     public int getModulo() {
         return modulo;
     }
+
     public Timer getTimer() {return timer;}
     public String getName() { return this.name; }
     public String getImageResource() { return imageResource; }
@@ -143,6 +105,10 @@ public class Tracker implements Parcelable {
     public boolean isFavourite() {
         return favourite;
     }
+
+    public int getTID() { return tID; }
+
+    public void setTID(int tID) { this.tID = tID; }
 
     public void setFavourite(boolean favourite) {
         this.favourite = favourite;
@@ -171,7 +137,8 @@ public class Tracker implements Parcelable {
     @Override
     public String toString() {
         return "Tracker{" +
-                "currSta=" + currSta +
+                "tID=" + tID +
+                ", currSta=" + currSta +
                 ", maxSta=" + maxSta +
                 ", recharge=" + recharge +
                 ", modulo=" + modulo +
@@ -180,6 +147,7 @@ public class Tracker implements Parcelable {
                 ", atMax=" + atMax +
                 ", imageResource='" + imageResource + '\'' +
                 ", favourite=" + favourite +
+                ", maxSent=" + maxSent +
                 '}';
     }
 
@@ -216,6 +184,7 @@ public class Tracker implements Parcelable {
         atMax = in.readByte() != 0x00;
         imageResource = in.readString();
         favourite = in.readByte() != 0x00;
+        tID = in.readInt();
     }
 
     @Override
@@ -234,6 +203,7 @@ public class Tracker implements Parcelable {
         dest.writeByte((byte) (atMax ? 0x01 : 0x00));
         dest.writeString(imageResource);
         dest.writeByte((byte) (favourite ? 0x01 : 0x00));
+        dest.writeInt(tID);
     }
 
     @SuppressWarnings("unused")

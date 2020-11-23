@@ -13,65 +13,38 @@ import java.util.Set;
 
 public class TrackerUpdater {
 
+    private TrackerDao trackerDao;
     public List<Tracker> trackers;
     public SharedPreferences sharedPreferences;
     public Context context;
+    private TrackerDatabase db;
 
     public TrackerUpdater(Context context) {
         this.context = context;
         this.sharedPreferences = context.getSharedPreferences(context.getString(R.string.preferences_file), context.MODE_PRIVATE);
         this.trackers = new ArrayList<>();
+        this.db = TrackerDatabase.getDatabase(context);
+        this.trackerDao = db.trackerDao();
         updateTrackers();
     }
 
     public List<Tracker> updateTrackers() {
-        decodePrefs();
+        getFromDatabase();
         for (int i = 0; i < trackers.size(); i++) {
             trackers.get(i).updateCounter();
         }
-        saveToPrefs();
+        saveToDatabase();
         return trackers;
     }
 
-    public List<Tracker> saveToPrefs() {
-        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-        prefsEditor.clear();
-        prefsEditor.apply();
-        Gson gson = new Gson();
-        if (trackers.size() > 0) {
-            for (int i = 0; i < trackers.size(); i++) {
-                String json = gson.toJson(trackers.get(i));
-                prefsEditor.putString("Tracker" + i, json);
-            }
-            prefsEditor.putInt("size", trackers.size());
-            prefsEditor.apply();
-        }
-        else {
-            Log.d("stamina", "No values to save to savedPreferences");
-        }
+    public List<Tracker> saveToDatabase() {
+        trackerDao.insertTrackers(trackers);
+        trackers = trackerDao.getAllTrackers();
         return trackers;
     }
 
-    public List<Tracker> decodePrefs() {
-        trackers.clear();
-        Gson gson = new Gson();
-        int amountOfTrackers = sharedPreferences.getInt("size", 0);
-        if (amountOfTrackers > 0) {
-            for (int i = 0; i < amountOfTrackers; i++) {
-                String json = sharedPreferences.getString("Tracker" + i, "FAILED");
-                if (json.equals("FAILED")) {
-                    Log.d("stamina", "Something went terribly wrong in decoding");
-                }
-                else {
-                    Tracker obj = gson.fromJson(json, Tracker.class);
-                    trackers.add(obj);
-                }
-            }
-        }
-        else {
-            Log.d("stamina", "No values in shared preferences file");
-        }
-        return trackers;
+    public List<Tracker> getFromDatabase() {
+        return trackerDao.getAllTrackers();
     }
 
     public void edit(int adapterPosition) {
@@ -84,9 +57,9 @@ public class TrackerUpdater {
     }
 
     public List<Tracker> delete(int adapterPosition) {
-        trackers.remove(adapterPosition);
-        saveToPrefs();
-        decodePrefs();
+        //trackers.remove(adapterPosition);
+        trackerDao.delete(trackers.get(adapterPosition));
+        trackers = getFromDatabase();
         return trackers;
     }
 
@@ -100,6 +73,14 @@ public class TrackerUpdater {
                 trackers.get(adapterPosition).setFavourite(!trackers.get(adapterPosition).isFavourite());
             }
         }
+        trackers = saveToDatabase();
+        return trackers;
+    }
+
+    public List<Tracker> update(Tracker tracker) {
+        trackerDao.update(tracker);
+        trackers = getFromDatabase();
+        trackers = saveToDatabase();
         return trackers;
     }
 }

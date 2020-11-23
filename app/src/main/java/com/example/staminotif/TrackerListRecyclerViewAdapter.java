@@ -79,7 +79,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             public void onClick(View view) {
                 trackerList.get(position).decrementSta1();
                 notifyItemChanged(position);
-                trackerUpdater.saveToPrefs();
+                trackerUpdater.saveToDatabase();
                 trackerUpdater.updateTrackers();
             }
         });
@@ -89,7 +89,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             public void onClick(View view) {
                 trackerList.get(position).decrementSta5();
                 notifyItemChanged(position);
-                trackerUpdater.saveToPrefs();
+                trackerUpdater.saveToDatabase();
                 trackerUpdater.updateTrackers();
             }
         });
@@ -99,7 +99,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             public void onClick(View view) {
                 trackerList.get(position).decrementSta10();
                 notifyItemChanged(position);
-                trackerUpdater.saveToPrefs();
+                trackerUpdater.saveToDatabase();
                 trackerUpdater.updateTrackers();
             }
         });
@@ -149,9 +149,9 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
                     }
                     else if (title.equals("Favourite")) {
                         trackerList = trackerUpdater.favourite(getAdapterPosition());
-                        trackerUpdater.saveToPrefs();
+                        trackerUpdater.saveToDatabase();
                         trackerList = trackerUpdater.updateTrackers();
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemChanged(getAdapterPosition());
                     }
                     return false;
                 }

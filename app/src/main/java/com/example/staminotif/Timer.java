@@ -23,8 +23,12 @@ public class Timer implements Parcelable {
         } catch (ParseException e) {
 
         }
-         */
+        */
         this.startDate = new Date().getTime();
+    }
+
+    Timer(Long value) {
+        this.startDate = value;
     }
 
     public int getDifference(){
@@ -38,6 +42,10 @@ public class Timer implements Parcelable {
 
     public void updateDate() {
         this.startDate = new Date().getTime();
+    }
+
+    public long getStartDate() {
+        return startDate;
     }
 
     protected Timer(Parcel in) {

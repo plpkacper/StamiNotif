@@ -37,6 +37,7 @@ public class SetUpNewApp extends AppCompatActivity {
     private Boolean edit;
     private Boolean favourite;
     private int position;
+    private int tID;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -48,14 +49,15 @@ public class SetUpNewApp extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.done) {
-            submitNewApp();
+            submitApp();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void submitNewApp() {
+    private void submitApp() {
         int exceptionCounter = 0;
         Bundle tracker = new Bundle();
+
         try {
             if (name.getText().toString() != null) {
                 tracker.putString("name", name.getText().toString());
@@ -96,6 +98,9 @@ public class SetUpNewApp extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please Set Current Stamina", Toast.LENGTH_SHORT).show();
             exceptionCounter++;
         }
+        if (tID >= 0) {
+            tracker.putInt("id", tID);
+        }
         if (imageDir != "") {
             tracker.putString("imageResource", imageDir);
         }
@@ -117,6 +122,7 @@ public class SetUpNewApp extends AppCompatActivity {
 
         edit = false;
         favourite = false;
+        tID = 0;
 
         name = findViewById(R.id.et_name);
         rechargeTime = findViewById(R.id.et_staminarecharge);
@@ -165,6 +171,9 @@ public class SetUpNewApp extends AppCompatActivity {
             edit = true;
             Tracker tracker = getIntent().getExtras().getParcelable("tracker");
             position = getIntent().getExtras().getInt("position");
+            if (tracker.getTID() >= 0) {
+                tID = tracker.getTID();
+            }
             if (tracker.getName() != null) {
                 actionBar.setTitle("Edit " + tracker.getName());
             }
