@@ -30,4 +30,7 @@
     <string name="channel_description_perm">This notification stays around to update the users favourite tracker.</string>
     <string name="channel_name">Full Notification</string>
     <string name="channel_description">This notification pings when an app has full stamina.</string>
+    <string name="notif_button_1">What value should the first notification button have?</string>
+    <string name="notif_button_2">What value should the second notification button have?</string>
+    <string name="button_apply">Apply</string>
 </resources>

@@ -11,11 +11,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +24,21 @@ public class TrackerWorker extends Worker {
 
     private static final String TEMP_ID = "temp";
     private static final String PERMANENT_ID = "perm";
-    int faveId;
-    NotificationManager notificationManager;
-    NotificationManager notificationManagerPerm;
-    TrackerUpdater trackerUpdater;
-    List<Tracker> trackers;
-    List<Integer> sentTrackers;
-    Context context;
-    int notificationId;
-    NotificationManager notifyMgr;
-    boolean permSent;
-    PendingIntent pendingIntent;
+    private int faveId;
+    private NotificationManager notificationManager;
+    private TrackerUpdater trackerUpdater;
+    private List<Tracker> trackers;
+    private List<Integer> sentTrackers;
+    private Context context;
+    private int notificationId;
+    private NotificationManager notifyMgr;
+    private boolean permSent;
+    private PendingIntent pendingIntent;
+    private SharedPreferences sharedPreferences;
+    private int button1;
+    private int button2;
+    private PendingIntent pIntentDecrease1;
+    private PendingIntent pIntentDecrease2;
 
     public TrackerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -50,6 +51,9 @@ public class TrackerWorker extends Worker {
         this.permSent = false;
         Intent intent = new Intent(context, MainActivity.class);
         this.pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        sharedPreferences = context.getSharedPreferences("default", MODE_PRIVATE);
+        this.button1 = sharedPreferences.getInt("notif1", 10);
+        this.button2 = sharedPreferences.getInt("notif2", 25);
         Log.d("stamina", "Started trackerWorker");
         createNotificationChannels();
     }
@@ -71,7 +75,7 @@ public class TrackerWorker extends Worker {
                 Log.d("notifications", "sendNotification: Update Perm!");
                 updatePermanent(i);
             }
-            else if(trackers.get(i).atMax && !sentTrackers.contains(i)) {
+            if(trackers.get(i).atMax && !sentTrackers.contains(i)) {
                 Log.d("notifications", "sendNotification: Send full!");
                 sentTrackers.add(i);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TEMP_ID)
@@ -83,7 +87,7 @@ public class TrackerWorker extends Worker {
                         .setContentIntent(pendingIntent)
                         .setVibrate(null);
                 if (notifyMgr == null) {
-                    notificationManagerPerm.notify(notificationId, builder.build());
+                    notificationManager.notify(notificationId, builder.build());
                 }
                 else {
                     notifyMgr.notify(notificationId, builder.build());
@@ -92,11 +96,21 @@ public class TrackerWorker extends Worker {
             }
         }
         if (!permExists) {
-            notificationManagerPerm.cancel(faveId);
+            notificationManager.cancel(faveId);
         }
     }
 
     private void updatePermanent(int position) {
+        Intent intentAction1 = new Intent(context,ActionReceiver.class);
+        intentAction1.putExtra("button1", button1);
+        intentAction1.putExtra("pressed", "button1");
+        intentAction1.putExtra("button2", button2);
+        Intent intentAction2 = new Intent(context,ActionReceiver.class);
+        intentAction2.putExtra("button2", button2);
+        intentAction2.putExtra("button1", button1);
+        intentAction2.putExtra("pressed", "button2");
+        pIntentDecrease1 = PendingIntent.getBroadcast(context,1,intentAction1,PendingIntent.FLAG_UPDATE_CURRENT);
+        pIntentDecrease2 = PendingIntent.getBroadcast(context,2,intentAction2,PendingIntent.FLAG_UPDATE_CURRENT);
         Tracker tracker = trackers.get(position);
         NotificationCompat.Builder builderPerm = new NotificationCompat.Builder(context, PERMANENT_ID)
                 .setSmallIcon(R.drawable.notification_icon)
@@ -105,12 +119,14 @@ public class TrackerWorker extends Worker {
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                 .setContentIntent(pendingIntent)
+                .addAction(R.drawable.minus, "-" + button1, pIntentDecrease1)
+                .addAction(R.drawable.minus, "-" + button2, pIntentDecrease2)
                 .setOngoing(true);
 
         if (!permSent) {
             Log.d("notifications", "sendNotification: Sending initial perm!");
             if (notifyMgr == null) {
-                notificationManagerPerm.notify(faveId, builderPerm.build());
+                notificationManager.notify(faveId, builderPerm.build());
             }
             else {
                 notifyMgr.notify(faveId, builderPerm.build());
@@ -120,7 +136,7 @@ public class TrackerWorker extends Worker {
         else {
             Log.d("notifications", "sendNotification: Updating Perm!");
             if (notifyMgr == null) {
-                notificationManagerPerm.notify(faveId, builderPerm.build());
+                notificationManager.notify(faveId, builderPerm.build());
             }
             else {
                 notifyMgr.notify(faveId, builderPerm.build());
@@ -149,8 +165,8 @@ public class TrackerWorker extends Worker {
             channel1.setSound(null, null);
             channel1.enableVibration(false);
             channel1.setLockscreenVisibility(NotificationManager.IMPORTANCE_NONE);
-            notificationManagerPerm = context.getSystemService(NotificationManager.class);
-            notificationManagerPerm.createNotificationChannel(channel1);
+            notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel1);
         }
         else {
             notifyMgr = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -161,6 +177,7 @@ public class TrackerWorker extends Worker {
     public void onStopped() {
         super.onStopped();
         trackers = trackerUpdater.updateTrackers();
-        Log.d("stamina", "onStopped: We got stopped bruv");
+        notificationManager.cancel(faveId);
+        Log.d("stamina", "onStopped: Service Stopped");
     }
 }

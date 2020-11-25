@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -54,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.add_new) {
-            Intent intent = new Intent(getApplicationContext(), ChooseApp.class);
+        if (id == R.id.settings) {
+            Intent intent = new Intent(getApplicationContext(), Settings.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -69,19 +70,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Made custom class with 3 functions that are often used by other classes
         trackerUpdater = new TrackerUpdater(getApplicationContext());
 
-        /*
-        trackers = new ArrayList<>();
+        FloatingActionButton fab = findViewById(R.id.fab_plus);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ChooseApp.class);
+                startActivity(intent);
+            }
+        });
 
-        Tracker example1 = new Tracker("Dokkan", 10, 200, 1);
-
-        trackers.add(example1);
-
-        trackers = trackerUpdater.saveToPrefs();
-        */
-
-        //Creating initial list of tracker objects
-        trackers = new ArrayList<>();
         //Populating & updating the tracker list
+        trackerUpdater.getFromDatabase();
+        trackerUpdater.saveToDatabase();
         trackers = trackerUpdater.updateTrackers();
 
         //Check for intent from setting up new app
@@ -141,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        trackerUpdater = new TrackerUpdater(getApplicationContext());
         //Kills trackerWorker instance if one exists. Start scheduled executor service
         WorkManager.getInstance(getApplicationContext()).cancelUniqueWork("tracker");
         startWorker();

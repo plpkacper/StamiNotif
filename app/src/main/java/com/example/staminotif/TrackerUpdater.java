@@ -57,7 +57,6 @@ public class TrackerUpdater {
     }
 
     public List<Tracker> delete(int adapterPosition) {
-        //trackers.remove(adapterPosition);
         trackerDao.delete(trackers.get(adapterPosition));
         trackers = getFromDatabase();
         return trackers;
@@ -82,5 +81,15 @@ public class TrackerUpdater {
         trackers = getFromDatabase();
         trackers = saveToDatabase();
         return trackers;
+    }
+
+    public Tracker getFavourite() {
+        trackers = getFromDatabase();
+        for (Tracker tracker : trackers) {
+            if (tracker.isFavourite()) {
+                return tracker;
+            }
+        }
+        return null;
     }
 }

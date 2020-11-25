@@ -85,6 +85,19 @@ public class Tracker implements Parcelable {
         this.atMax = false;
     }
 
+    public void decrementStaValue(int value) {
+        if (this.currSta - value < 0) {
+            this.currSta = 0;
+        }
+        else {
+            this.currSta -= value;
+        }
+        if (this.atMax) {
+            this.timer.updateDate();
+        }
+        this.atMax = false;
+    }
+
     public int getCurrSta() {
         return currSta;
     }

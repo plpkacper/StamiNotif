@@ -3,21 +3,26 @@
     package="com.example.staminotif">
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SetUpNewApp" android:parentActivityName= ".ChooseApp">
-        </activity>
-        <activity android:name=".ChooseApp" android:parentActivityName= ".MainActivity"/>
+        <activity android:name=".Settings"
+            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".SetUpNewApp"
+            android:parentActivityName=".ChooseApp"/>
+        <activity
+            android:name=".ChooseApp"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".ActionReceiver" />
     </application>
-
 </manifest>

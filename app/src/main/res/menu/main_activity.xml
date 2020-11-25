@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/add_new"
-        android:icon="@drawable/plus"
-        android:title="Add New Tracker"
+        android:id="@+id/settings"
+        android:icon="@drawable/settings"
+        android:title="Go To Settings"
         app:showAsAction="always"
         android:orderInCategory="0"/>
 
