@@ -38,6 +38,7 @@ public class SetUpNewApp extends AppCompatActivity {
     private Boolean favourite;
     private int position;
     private int tID;
+    private int imageId;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,8 +102,11 @@ public class SetUpNewApp extends AppCompatActivity {
         if (tID >= 0) {
             tracker.putInt("id", tID);
         }
-        if (imageDir != "") {
+        if (!imageDir.equals("")) {
             tracker.putString("imageResource", imageDir);
+        }
+        if (imageId != 0) {
+            tracker.putInt("imageId", imageId);
         }
         if (edit) {
             tracker.putInt("replace", position);
@@ -123,6 +127,8 @@ public class SetUpNewApp extends AppCompatActivity {
         edit = false;
         favourite = false;
         tID = 0;
+        imageId = 0;
+        imageDir = "";
 
         name = findViewById(R.id.et_name);
         rechargeTime = findViewById(R.id.et_staminarecharge);
@@ -164,9 +170,11 @@ public class SetUpNewApp extends AppCompatActivity {
             //Not the right way to do it I imagine
             if (!example.getImageUrl().equals("")) {
                 Drawable d = Drawable.createFromPath(example.getImageUrl());
+                imageDir = example.getImageUrl();
                 imageView.setImageDrawable(d);
             }
             else if (example.getId() != 0) {
+                imageId = example.getId();
                 imageView.setImageResource(example.getId());
             }
         }
@@ -183,7 +191,6 @@ public class SetUpNewApp extends AppCompatActivity {
             else {
                 actionBar.setTitle("Edit Your App");
             }
-
             if (tracker.getRecharge() > 0) {
                 rechargeTime.setText(Integer.toString(tracker.getRecharge()));
             }
@@ -196,9 +203,13 @@ public class SetUpNewApp extends AppCompatActivity {
             if (!tracker.getName().equals(null)) {
                 name.setText(tracker.getName());
             }
-            if (tracker.getImageResource() != "") {
+            if (!tracker.getImageResource().equals("")) {
                 setImage(tracker.getImageResource());
                 imageDir = tracker.getImageResource();
+            }
+            if (tracker.getImageId() != 0) {
+                imageId = tracker.getImageId();
+                imageView.setImageResource(tracker.getImageId());
             }
             if (tracker.isFavourite()) {
                 favourite = true;

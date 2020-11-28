@@ -1,9 +1,11 @@
 package com.example.staminotif;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,8 +62,13 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             holder.trackerView.setBackgroundColor(Color.parseColor("#ffffff"));
         }
         ImageView imageView = holder.trackerView.findViewById(R.id.iv_icon);
-        Drawable d = Drawable.createFromPath(trackerList.get(position).getImageResource());
-        imageView.setImageDrawable(d);
+        if (!trackerList.get(position).getImageResource().equals("")) {
+            Drawable d = Drawable.createFromPath(trackerList.get(position).getImageResource());
+            imageView.setImageDrawable(d);
+        }
+        if (trackerList.get(position).getImageId() != 0) {
+            imageView.setImageResource(trackerList.get(position).getImageId());
+        }
         TextView appName = holder.trackerView.findViewById(R.id.tv_item_app_name);
         appName.setText(trackerList.get(position).getName());
         ProgressBar progressBar = holder.trackerView.findViewById(R.id.pb_showstamina);

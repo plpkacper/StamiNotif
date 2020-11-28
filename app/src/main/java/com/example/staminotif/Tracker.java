@@ -25,10 +25,11 @@ public class Tracker implements Parcelable {
     public Timer timer;
     public boolean atMax;
     public String imageResource;
+    public int imageId;
     public boolean favourite;
     public boolean maxSent;
 
-    Tracker(int tID, String name, int currSta, int maxSta, int recharge, String imageResource, boolean favourite) {
+    Tracker(int tID, String name, int currSta, int maxSta, int recharge, String imageResource, boolean favourite, int imageId) {
         this.tID = tID;
         this.name = name;
         this.currSta = currSta;
@@ -37,6 +38,7 @@ public class Tracker implements Parcelable {
         this.modulo = 0;
         this.timer = new Timer();
         this.imageResource = imageResource;
+        this.imageId = imageId;
         if (this.currSta == this.maxSta) {
             this.atMax = true;
         }
@@ -119,6 +121,14 @@ public class Tracker implements Parcelable {
         return favourite;
     }
 
+    public int getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
+    }
+
     public int getTID() { return tID; }
 
     public void setTID(int tID) { this.tID = tID; }
@@ -159,6 +169,7 @@ public class Tracker implements Parcelable {
                 ", timer=" + timer +
                 ", atMax=" + atMax +
                 ", imageResource='" + imageResource + '\'' +
+                ", imageId=" + imageId +
                 ", favourite=" + favourite +
                 ", maxSent=" + maxSent +
                 '}';
@@ -196,6 +207,7 @@ public class Tracker implements Parcelable {
         timer = (Timer) in.readValue(Timer.class.getClassLoader());
         atMax = in.readByte() != 0x00;
         imageResource = in.readString();
+        imageId = in.readInt();
         favourite = in.readByte() != 0x00;
         tID = in.readInt();
     }
@@ -215,6 +227,7 @@ public class Tracker implements Parcelable {
         dest.writeValue(timer);
         dest.writeByte((byte) (atMax ? 0x01 : 0x00));
         dest.writeString(imageResource);
+        dest.writeInt(imageId);
         dest.writeByte((byte) (favourite ? 0x01 : 0x00));
         dest.writeInt(tID);
     }

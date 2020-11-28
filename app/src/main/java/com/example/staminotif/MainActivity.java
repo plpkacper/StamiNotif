@@ -11,9 +11,6 @@ import androidx.work.WorkManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -34,26 +31,18 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TrackerExampleDao trackerExampleDao;
-    private TrackerExampleDatabase db;
     private volatile List<Tracker> trackers;
     private SharedPreferences sharedPreferences;
-    private FloatingActionButton fab;
     public TrackerUpdater trackerUpdater;
     public RecyclerView.Adapter adapter;
     public ScheduledExecutorService executorService;
@@ -78,14 +67,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sharedPreferences = getSharedPreferences("default", MODE_PRIVATE);
-        this.db = TrackerExampleDatabase.getDatabase(this);
-        this.trackerExampleDao = db.trackerExampleDao();
-        getExamples();
         //Made custom class with 3 functions that are often used by other classes
         trackerUpdater = new TrackerUpdater(getApplicationContext());
+        //Populating & updating the tracker list
+        trackers = trackerUpdater.updateTrackers();
+        sharedPreferences = getSharedPreferences("default", MODE_PRIVATE);
+        TrackerExampleDatabase db = TrackerExampleDatabase.getDatabase(this);
+        this.trackerExampleDao = db.trackerExampleDao();
+        getExamples();
 
-        fab = findViewById(R.id.fab_plus);
+        FloatingActionButton fab = findViewById(R.id.fab_plus);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Log.d("internet", "onClick: Clicked fab");
@@ -94,10 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        //Populating & updating the tracker list
-        trackerUpdater.getFromDatabase();
-        trackerUpdater.saveToDatabase();
-        trackers = trackerUpdater.updateTrackers();
+
+        Log.d("stamina", "onCreate: " + trackers);
 
         //Check for intent from setting up new app
         Intent intent = getIntent();
@@ -119,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void addApp(Bundle bundle) {
         Tracker tracker;
 
-        tracker = new Tracker(bundle.getInt("id", 0), bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""), bundle.getBoolean("favourite"));
+        tracker = new Tracker(bundle.getInt("id", 0), bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""), bundle.getBoolean("favourite"), bundle.getInt("imageId", 0));
 
         if (bundle.containsKey("replace")) {
             trackerUpdater.update(tracker);
@@ -132,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startWorker() {
         executorService = Executors.newScheduledThreadPool(1);
-        ScheduledFuture scheduledFuture = executorService.schedule(new Runnable() {
+        executorService.schedule(new Runnable() {
             @Override
             public void run() {
                 trackers.clear();
@@ -180,10 +169,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getExamples() {
         String url = "https://staminotif.firebaseio.com/TrackerExample.json";
         final SharedPreferences.Editor editor = sharedPreferences.edit();
-        final Long prevRequest = sharedPreferences.getLong("prevRequest", 0L);
-        Long diff = new Date().getTime() - prevRequest;
+        final long prevRequest = sharedPreferences.getLong("prevRequest", 0L);
+        long diff = new Date().getTime() - prevRequest;
         Log.d("exampleDatabase", "Difference for database update: " + diff);
-        if (diff > 604800000) {
+        if (diff > 604800000L) {
             trackerExampleDao.nukeTable();
             Toast.makeText(getApplicationContext(), "Updating Example Database", Toast.LENGTH_SHORT).show();
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -222,9 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     bitmap = new DownloadExamples().execute(url).get();
                 }
-                catch (Exception e) {
-
-                }
+                catch (Exception ignored) {}
                 finally {
                     String dir = saveImage(name, bitmap);
                     TrackerExample trackerExample = new TrackerExample(recharge, dir, name, maxSta);

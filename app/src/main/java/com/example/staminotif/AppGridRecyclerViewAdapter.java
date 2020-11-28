@@ -2,7 +2,9 @@ package com.example.staminotif;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +50,10 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
             Drawable d = Drawable.createFromPath(examplesList.get(position).getImageUrl());
             appIcon.setImageDrawable(d);
         }
-
+        //Desperation
+        int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        appIcon.getLayoutParams().height = width/3;
+        appIcon.getLayoutParams().width = width/3;
     }
 
     @Override

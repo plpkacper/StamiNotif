@@ -59,7 +59,7 @@ public class ChooseApp extends AppCompatActivity {
         //Replace with default drawable
         TrackerExample example1 = new TrackerExample(0, R.drawable.dokkan , "Custom", 0);
 
-        examples.add(example1);
+        examples.add(0, example1);
 
         Log.d("internet", "onCreate: " + examples.toString());
 
