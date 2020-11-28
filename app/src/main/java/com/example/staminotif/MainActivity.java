@@ -9,6 +9,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,6 +38,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -46,8 +49,10 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private TrackerExampleDao trackerExampleDao;
+    private TrackerExampleDatabase db;
     private volatile List<Tracker> trackers;
-    private ArrayList<TrackerExample> examples;
+    private SharedPreferences sharedPreferences;
     private FloatingActionButton fab;
     public TrackerUpdater trackerUpdater;
     public RecyclerView.Adapter adapter;
@@ -73,7 +78,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        examples = new ArrayList<>();
+        sharedPreferences = getSharedPreferences("default", MODE_PRIVATE);
+        this.db = TrackerExampleDatabase.getDatabase(this);
+        this.trackerExampleDao = db.trackerExampleDao();
         getExamples();
         //Made custom class with 3 functions that are often used by other classes
         trackerUpdater = new TrackerUpdater(getApplicationContext());
@@ -83,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View view) {
                 Log.d("internet", "onClick: Clicked fab");
                 Intent intent = new Intent(getApplicationContext(), ChooseApp.class);
-                intent.putParcelableArrayListExtra("examples", examples);
                 startActivity(intent);
             }
         });
@@ -173,30 +179,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getExamples() {
         String url = "https://staminotif.firebaseio.com/TrackerExample.json";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        examples = parseResponse(response);
-                        Log.d("internet", "parseResponse: " + examples.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("internet", "onErrorResponse: " + error.getLocalizedMessage());
-                    }
-                });
-
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-
-        queue.add(stringRequest);
-
-        Log.d("internet", "parseResponse:1 " + examples.toString());
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        final Long prevRequest = sharedPreferences.getLong("prevRequest", 0L);
+        Long diff = new Date().getTime() - prevRequest;
+        Log.d("exampleDatabase", "Difference for database update: " + diff);
+        if (diff > 604800000) {
+            trackerExampleDao.nukeTable();
+            Toast.makeText(getApplicationContext(), "Updating Example Database", Toast.LENGTH_SHORT).show();
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            parseResponse(response);
+                            editor.putLong("prevRequest", new Date().getTime());
+                            editor.apply();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Updating Database FAILED", Toast.LENGTH_SHORT).show();
+                            Log.d("internet", "onErrorResponse: " + error.getLocalizedMessage());
+                        }
+                    });
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            queue.add(stringRequest);
+            Toast.makeText(getApplicationContext(), "Updating Database Complete", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private ArrayList<TrackerExample> parseResponse(String response) {
+    private void parseResponse(String response) {
         try {
             JSONObject examplesObject = new JSONObject(response);
             for (Iterator<String> iterator = examplesObject.keys(); iterator.hasNext();) {
@@ -216,22 +228,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finally {
                     String dir = saveImage(name, bitmap);
                     TrackerExample trackerExample = new TrackerExample(recharge, dir, name, maxSta);
-                    examples.add(trackerExample);
+                    trackerExampleDao.insert(trackerExample);
                 }
             }
-            Log.d("internet", "parseResponse: " + examples.toString());
-            fab.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(), ChooseApp.class);
-                    intent.putParcelableArrayListExtra("examples", examples);
-                    startActivity(intent);
-                }
-            });
-            return examples;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
     private String saveImage(String name, Bitmap bitmap) {

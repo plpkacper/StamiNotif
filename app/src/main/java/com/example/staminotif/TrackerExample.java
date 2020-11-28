@@ -4,13 +4,24 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "trackerExamples")
 public class TrackerExample implements Parcelable {
 
+    @NonNull
+    @PrimaryKey(autoGenerate = true)
+    private int ID;
     private String name;
     private int currSta;
     private int recharge;
     private int maxSta;
     private String url;
+    @ColumnInfo(name = "imageResourceId")
     private int id;
 
     public TrackerExample(int recharge, String url, String name, int maxSta) {
@@ -21,7 +32,7 @@ public class TrackerExample implements Parcelable {
         this.url = url;
         this.id = 0;
     }
-
+    @Ignore
     public TrackerExample(int recharge, int id, String name, int maxSta) {
         this.name = name;
         this.currSta = 0;
@@ -49,6 +60,42 @@ public class TrackerExample implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public int getCurrSta() {
+        return currSta;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCurrSta(int currSta) {
+        this.currSta = currSta;
+    }
+
+    public void setRecharge(int recharge) {
+        this.recharge = recharge;
+    }
+
+    public void setMaxSta(int maxSta) {
+        this.maxSta = maxSta;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getRecharge() {

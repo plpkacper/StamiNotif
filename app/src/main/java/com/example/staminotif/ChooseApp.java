@@ -37,6 +37,8 @@ import java.util.List;
 
 public class ChooseApp extends AppCompatActivity {
 
+    private TrackerExampleDao trackerExampleDao;
+    private TrackerExampleDatabase db;
     List<TrackerExample> examples;
 
     @Override
@@ -49,8 +51,10 @@ public class ChooseApp extends AppCompatActivity {
 
         examples = new ArrayList<>();
 
-        Intent intent = getIntent();
-        examples = intent.getParcelableArrayListExtra("examples");
+        this.db = TrackerExampleDatabase.getDatabase(this);
+        this.trackerExampleDao = db.trackerExampleDao();
+
+        examples = trackerExampleDao.getAllTrackers();
 
         //Replace with default drawable
         TrackerExample example1 = new TrackerExample(0, R.drawable.dokkan , "Custom", 0);
