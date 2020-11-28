@@ -1,5 +1,6 @@
 package com.example.staminotif;
 
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,14 +10,25 @@ public class TrackerExample implements Parcelable {
     private int currSta;
     private int recharge;
     private int maxSta;
-    private int imageRef;
+    private String url;
+    private int id;
 
-    public TrackerExample(int recharge, int imageRef, String name) {
+    public TrackerExample(int recharge, String url, String name, int maxSta) {
         this.name = name;
         this.currSta = 0;
         this.recharge = recharge;
-        this.maxSta = 0;
-        this.imageRef = imageRef;
+        this.maxSta = maxSta;
+        this.url = url;
+        this.id = 0;
+    }
+
+    public TrackerExample(int recharge, int id, String name, int maxSta) {
+        this.name = name;
+        this.currSta = 0;
+        this.recharge = recharge;
+        this.maxSta = maxSta;
+        this.id = id;
+        this.url = "";
     }
 
     public static final Creator<TrackerExample> CREATOR = new Creator<TrackerExample>() {
@@ -31,6 +43,14 @@ public class TrackerExample implements Parcelable {
         }
     };
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getRecharge() {
         return recharge;
     }
@@ -43,8 +63,8 @@ public class TrackerExample implements Parcelable {
         return name;
     }
 
-    public int getImageResource() {
-        return imageRef;
+    public String getImageUrl() {
+        return url;
     }
 
     protected TrackerExample(Parcel in) {
@@ -52,7 +72,8 @@ public class TrackerExample implements Parcelable {
         currSta = in.readInt();
         recharge = in.readInt();
         maxSta = in.readInt();
-        imageRef = in.readInt();
+        url = in.readString();
+        id = in.readInt();
     }
 
     @Override
@@ -66,7 +87,8 @@ public class TrackerExample implements Parcelable {
         dest.writeInt(currSta);
         dest.writeInt(recharge);
         dest.writeInt(maxSta);
-        dest.writeInt(imageRef);
+        dest.writeString(url);
+        dest.writeInt(id);
     }
 
     @Override
@@ -76,7 +98,8 @@ public class TrackerExample implements Parcelable {
                 ", currSta=" + currSta +
                 ", recharge=" + recharge +
                 ", maxSta=" + maxSta +
-                ", imageName='" + imageRef + '\'' +
+                ", url='" + url + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

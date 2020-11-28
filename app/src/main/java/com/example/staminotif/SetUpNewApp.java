@@ -162,9 +162,12 @@ public class SetUpNewApp extends AppCompatActivity {
                 name.setText(example.getName());
             }
             //Not the right way to do it I imagine
-            if (example.getImageResource() != 0) {
-                imageView.setImageResource(example.getImageResource());
-                saveImage(example.getName());
+            if (!example.getImageUrl().equals("")) {
+                Drawable d = Drawable.createFromPath(example.getImageUrl());
+                imageView.setImageDrawable(d);
+            }
+            else if (example.getId() != 0) {
+                imageView.setImageResource(example.getId());
             }
         }
         else if (getIntent().getExtras().containsKey("tracker")) {
@@ -204,7 +207,7 @@ public class SetUpNewApp extends AppCompatActivity {
 
     }
 
-    private void saveImage(String name) {
+    private String saveImage(String name) {
         imageView.setDrawingCacheEnabled(true);
         Drawable drawable = imageView.getDrawable();
 
@@ -226,6 +229,8 @@ public class SetUpNewApp extends AppCompatActivity {
         catch (Exception e) {
             Log.d("stamina", "FILE SAVE FAILED");
         }
+
+        return imageDir;
     }
 
     //FIX

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <View
-        android:id="@+id/darkener"
+        android:id="@+id/v_darkener"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#000000"

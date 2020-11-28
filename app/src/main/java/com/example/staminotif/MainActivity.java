@@ -8,40 +8,47 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private volatile List<Tracker> trackers;
+    private ArrayList<TrackerExample> examples;
+    private FloatingActionButton fab;
     public TrackerUpdater trackerUpdater;
     public RecyclerView.Adapter adapter;
     public ScheduledExecutorService executorService;
@@ -66,14 +73,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        examples = new ArrayList<>();
+        getExamples();
         //Made custom class with 3 functions that are often used by other classes
         trackerUpdater = new TrackerUpdater(getApplicationContext());
 
-        FloatingActionButton fab = findViewById(R.id.fab_plus);
+        fab = findViewById(R.id.fab_plus);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                Log.d("internet", "onClick: Clicked fab");
                 Intent intent = new Intent(getApplicationContext(), ChooseApp.class);
+                intent.putParcelableArrayListExtra("examples", examples);
                 startActivity(intent);
             }
         });
@@ -159,6 +169,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void getExamples() {
+        String url = "https://staminotif.firebaseio.com/TrackerExample.json";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        examples = parseResponse(response);
+                        Log.d("internet", "parseResponse: " + examples.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("internet", "onErrorResponse: " + error.getLocalizedMessage());
+                    }
+                });
+
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        queue.add(stringRequest);
+
+        Log.d("internet", "parseResponse:1 " + examples.toString());
+    }
+
+    private ArrayList<TrackerExample> parseResponse(String response) {
+        try {
+            JSONObject examplesObject = new JSONObject(response);
+            for (Iterator<String> iterator = examplesObject.keys(); iterator.hasNext();) {
+                String listName = iterator.next();
+                JSONObject example = examplesObject.getJSONObject(listName);
+                String name = example.getString("name");
+                int maxSta = example.getInt("maxSta");
+                int recharge = example.getInt("recharge");
+                String url = example.getString("url");
+                Bitmap bitmap = null;
+                try {
+                    bitmap = new DownloadExamples().execute(url).get();
+                }
+                catch (Exception e) {
+
+                }
+                finally {
+                    String dir = saveImage(name, bitmap);
+                    TrackerExample trackerExample = new TrackerExample(recharge, dir, name, maxSta);
+                    examples.add(trackerExample);
+                }
+            }
+            Log.d("internet", "parseResponse: " + examples.toString());
+            fab.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), ChooseApp.class);
+                    intent.putParcelableArrayListExtra("examples", examples);
+                    startActivity(intent);
+                }
+            });
+            return examples;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String saveImage(String name, Bitmap bitmap) {
+        String imageDir = "";
+        try {
+            File file = new File(getFilesDir(), name + "Icon.png");
+
+            FileOutputStream fOut = new FileOutputStream(file);
+
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            imageDir = getFilesDir() + File.separator + name + "Icon.png";
+            Log.d("stamina", "FILE SAVE SUCCEEDED");
+        }
+        catch (Exception e) {
+            Log.d("stamina", "FILE SAVE FAILED");
+        }
+
+        return imageDir;
     }
 }
 

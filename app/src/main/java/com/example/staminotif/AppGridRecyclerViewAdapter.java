@@ -2,20 +2,17 @@ package com.example.staminotif;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcel;
-import android.util.Log;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.Set;
 
 public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecyclerViewAdapter.TrackerExampleViewHolder> {
 
@@ -44,7 +41,14 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
         TextView appName = holder.TrackerExampleView.findViewById(R.id.tv_example_name);
         appName.setText(examplesList.get(position).getName());
         ImageView appIcon = holder.TrackerExampleView.findViewById(R.id.iv_background_icon);
-        appIcon.setImageResource(R.drawable.dokkan);
+        if (examplesList.get(position).getId() != 0) {
+            appIcon.setImageResource(examplesList.get(position).getId());
+        }
+        else {
+            Drawable d = Drawable.createFromPath(examplesList.get(position).getImageUrl());
+            appIcon.setImageDrawable(d);
+        }
+
     }
 
     @Override
