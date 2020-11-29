@@ -51,9 +51,6 @@ public class Settings extends AppCompatActivity {
                 saveToPrefs();
             }
         });
-
-
-
     }
 
     private void saveToPrefs() {
@@ -74,5 +71,6 @@ public class Settings extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Applied!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

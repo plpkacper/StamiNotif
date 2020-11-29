@@ -1,12 +1,10 @@
 package com.example.staminotif;
 
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,7 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-public class ActionReceiver extends BroadcastReceiver {
+public class NotificationActionReceiver extends BroadcastReceiver {
 
     private TrackerUpdater trackerUpdater;
     private Tracker fave;
@@ -89,11 +87,11 @@ public class ActionReceiver extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void updateNotification() {
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        Intent intentAction1 = new Intent(context,ActionReceiver.class);
+        Intent intentAction1 = new Intent(context, NotificationActionReceiver.class);
         intentAction1.putExtra("button1", action1);
         intentAction1.putExtra("pressed", "button1");
         intentAction1.putExtra("button2", action2);
-        Intent intentAction2 = new Intent(context,ActionReceiver.class);
+        Intent intentAction2 = new Intent(context, NotificationActionReceiver.class);
         intentAction2.putExtra("button2", action2);
         intentAction2.putExtra("button1", action1);
         intentAction2.putExtra("pressed", "button2");

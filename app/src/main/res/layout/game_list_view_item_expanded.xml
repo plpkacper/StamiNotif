@@ -33,9 +33,8 @@
             android:id="@+id/tv_item_app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/black"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.43"
@@ -49,9 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/black"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
             app:layout_constraintEnd_toEndOf="@+id/tv_item_app_name"
             app:layout_constraintStart_toStartOf="@+id/tv_item_app_name"
@@ -74,12 +72,11 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_icon" />
 
         <LinearLayout
+            android:id="@+id/ll_buttons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pb_showstamina">
 
             <Button
@@ -87,10 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:text="@string/decrement1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
                 tools:text="-1" />
 
             <Button
@@ -98,10 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:text="@string/decrement5"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
                 tools:text="-5" />
 
             <Button
@@ -109,10 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:text="@string/decrement10"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@android:color/black"
                 tools:text="-10" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

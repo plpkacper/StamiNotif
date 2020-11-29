@@ -101,11 +101,11 @@ public class TrackerWorker extends Worker {
     }
 
     private void updatePermanent(int position) {
-        Intent intentAction1 = new Intent(context,ActionReceiver.class);
+        Intent intentAction1 = new Intent(context, NotificationActionReceiver.class);
         intentAction1.putExtra("button1", button1);
         intentAction1.putExtra("pressed", "button1");
         intentAction1.putExtra("button2", button2);
-        Intent intentAction2 = new Intent(context,ActionReceiver.class);
+        Intent intentAction2 = new Intent(context, NotificationActionReceiver.class);
         intentAction2.putExtra("button2", button2);
         intentAction2.putExtra("button1", button1);
         intentAction2.putExtra("pressed", "button2");
@@ -177,7 +177,7 @@ public class TrackerWorker extends Worker {
     public void onStopped() {
         super.onStopped();
         trackers = trackerUpdater.updateTrackers();
-        notificationManager.cancel(faveId);
+        notificationManager.cancelAll();
         Log.d("stamina", "onStopped: Service Stopped");
     }
 }

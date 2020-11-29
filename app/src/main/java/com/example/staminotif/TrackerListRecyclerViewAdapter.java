@@ -1,5 +1,6 @@
 package com.example.staminotif;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -121,7 +122,6 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
 
         private View trackerView;
         private TrackerListRecyclerViewAdapter adapter;
-        ConstraintLayout expandableLayout;
 
         public TrackerViewHolder(@NonNull View TrackerView, TrackerListRecyclerViewAdapter adapter) {
             super(TrackerView);
@@ -129,12 +129,11 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             this.adapter = adapter;
             TrackerView.setOnClickListener(this);
             TrackerView.setOnLongClickListener(this);
-            expandableLayout = trackerView.findViewById(R.id.expandableLayout);
         }
 
         @Override
         public void onClick(View view) {
-
+            Log.d("stamina", "onClick: " + trackerList.get(getAdapterPosition()));
         }
 
         @Override
@@ -151,13 +150,15 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
                         trackerUpdater.edit(getAdapterPosition());
                     }
                     else if (title.equals("Delete")) {
-                        trackerList = trackerUpdater.delete(getAdapterPosition());
+                        trackerUpdater.delete(getAdapterPosition());
+                        trackerList = trackerUpdater.updateTrackers();
                         adapter.notifyDataSetChanged();
                     }
                     else if (title.equals("Favourite")) {
                         trackerList = trackerUpdater.favourite(getAdapterPosition());
                         trackerUpdater.saveToDatabase();
                         trackerList = trackerUpdater.updateTrackers();
+                        Log.d("stamina", "onMenuItemClick: " + trackerList.get(getAdapterPosition()));
                         adapter.notifyItemChanged(getAdapterPosition());
                     }
                     return false;

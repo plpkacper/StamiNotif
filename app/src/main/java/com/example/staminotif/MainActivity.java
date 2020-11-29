@@ -1,16 +1,21 @@
 package com.example.staminotif;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -41,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TrackerExampleDao trackerExampleDao;
-    private volatile List<Tracker> trackers;
+    private List<Tracker> trackers;
     private SharedPreferences sharedPreferences;
     public TrackerUpdater trackerUpdater;
     public RecyclerView.Adapter adapter;
@@ -79,15 +84,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatingActionButton fab = findViewById(R.id.fab_plus);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Log.d("internet", "onClick: Clicked fab");
                 Intent intent = new Intent(getApplicationContext(), ChooseApp.class);
                 startActivity(intent);
             }
         });
-
-
-        Log.d("stamina", "onCreate: " + trackers);
-
         //Check for intent from setting up new app
         Intent intent = getIntent();
         if (intent.hasExtra("tracker")){
@@ -99,9 +99,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RecyclerView recyclerView = findViewById(R.id.rv_show_app_instances);
         adapter = new TrackerListRecyclerViewAdapter(getApplicationContext(), trackers);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }
+        else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }
         //Kills trackerWorker instance if one exists. Start scheduled executor service
         WorkManager.getInstance(getApplicationContext()).cancelUniqueWork("tracker");
+        deleteNotifications();
         startWorker();
     }
 
@@ -110,13 +117,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tracker = new Tracker(bundle.getInt("id", 0), bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""), bundle.getBoolean("favourite"), bundle.getInt("imageId", 0));
 
-        if (bundle.containsKey("replace")) {
-            trackerUpdater.update(tracker);
-        }
+        if (bundle.containsKey("replace")) trackerUpdater.update(tracker);
         else {
             trackers.add(tracker);
         }
-        trackers = trackerUpdater.saveToDatabase();
+        trackerUpdater.saveToDatabase();
+        trackers = trackerUpdater.updateTrackers();
     }
 
     private void startWorker() {
@@ -148,13 +154,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         trackerUpdater = new TrackerUpdater(getApplicationContext());
         //Kills trackerWorker instance if one exists. Start scheduled executor service
         WorkManager.getInstance(getApplicationContext()).cancelUniqueWork("tracker");
+        deleteNotifications();
         startWorker();
+    }
+
+    private void deleteNotifications() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NotificationManager notificationManager = getApplicationContext().getSystemService(NotificationManager.class);
+            notificationManager.cancelAll();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        trackerUpdater.updateTrackers();
         Log.d("stamina", "The activity is being killed: kill executorservice and start the periodic work request");
         executorService.shutdown();
         //Code used to start a periodic work request when the app is killed

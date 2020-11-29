@@ -116,6 +116,7 @@ public class SetUpNewApp extends AppCompatActivity {
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
             intent.putExtra("tracker", tracker);
             startActivity(intent);
+            finish();
         }
     }
 

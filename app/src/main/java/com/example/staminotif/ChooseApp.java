@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -66,6 +67,12 @@ public class ChooseApp extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.rv_show_presets);
         RecyclerView.Adapter adapter = new AppGridRecyclerViewAdapter(getApplicationContext(), examples);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 5));
+        }
+        else {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }
     }
 }
