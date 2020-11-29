@@ -4,13 +4,11 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="tv_set_up_app">Set Up App</string>
-    <string name="tv_stamina_recharge_time">Stamina Recharge Time</string>
+    <string name="tv_stamina_recharge_time">Stamina Recharge Time (minutes)</string>
     <string name="tv_max_stamina">Max Stamina</string>
     <string name="tv_current_stamina_value">Current Stamina Value</string>
     <string name="button_search">Search</string>
@@ -33,4 +31,5 @@
     <string name="notif_button_1">What value should the first notification button have?</string>
     <string name="notif_button_2">What value should the second notification button have?</string>
     <string name="button_apply">Apply</string>
+    <string name="tv_search_tip">Search your apps name to find the icon.</string>
 </resources>

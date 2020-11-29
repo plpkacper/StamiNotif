@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
+        trackerUpdater.updateTrackers();
         Log.d("stamina", "The activity is being killed: kill executorservice and start the periodic work request");
         executorService.shutdown();
         //Code used to start a periodic work request when the app is killed
