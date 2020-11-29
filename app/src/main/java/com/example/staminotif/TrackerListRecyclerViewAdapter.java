@@ -33,11 +33,13 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<TrackerListRecyclerViewAdapter.TrackerViewHolder> {
 
+    //Instantiating variables
     private Context context;
     private volatile List<Tracker> trackerList;
     private TrackerUpdater trackerUpdater;
 
-    public TrackerListRecyclerViewAdapter(Context context, List<Tracker> trackerList) {
+    public TrackerListRecyclerViewAdapter(Context context) {
+        //Setting variables
         this.context = context;
         this.trackerUpdater = new TrackerUpdater(this.context);
         this.trackerList = trackerUpdater.updateTrackers();
@@ -47,6 +49,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
     @Override
     public TrackerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
+        //Making a view holder
         View itemView = LayoutInflater.from(context).inflate(R.layout.game_list_view_item_expanded, parent, false);
         TrackerViewHolder viewHolder = new TrackerViewHolder(itemView, this);
 
@@ -56,12 +59,14 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
     @Override
     public void onBindViewHolder(@NonNull TrackerViewHolder holder, final int position) {
 
+        //Setting the instances colour to be different if it is a favourite
         if (trackerList.get(position).isFavourite()) {
             holder.trackerView.setBackgroundColor(Color.parseColor("#a1c5ff"));
         }
         else {
             holder.trackerView.setBackgroundColor(Color.parseColor("#ffffff"));
         }
+        //Setting the icon image to be either from a directory or from a local drawable
         ImageView imageView = holder.trackerView.findViewById(R.id.iv_icon);
         if (!trackerList.get(position).getImageResource().equals("")) {
             Drawable d = Drawable.createFromPath(trackerList.get(position).getImageResource());
@@ -70,6 +75,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
         if (trackerList.get(position).getImageId() != 0) {
             imageView.setImageResource(trackerList.get(position).getImageId());
         }
+        //Setting values for all the elements
         TextView appName = holder.trackerView.findViewById(R.id.tv_item_app_name);
         appName.setText(trackerList.get(position).getName());
         ProgressBar progressBar = holder.trackerView.findViewById(R.id.pb_showstamina);
@@ -78,10 +84,12 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
         TextView staminaAmount = holder.trackerView.findViewById(R.id.tv_showstamina);
         staminaAmount.setText(trackerList.get(position).getCurrSta() + "/" + trackerList.get(position).getMaxSta());
 
+        //Getting the decrement buttons
         Button decrement1 = holder.trackerView.findViewById(R.id.button__1sta);
         Button decrement5 = holder.trackerView.findViewById(R.id.button__5sta);
         Button decrement10 = holder.trackerView.findViewById(R.id.button__10sta);
 
+        //Giving each button an onclicklistener.
         decrement1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,25 +135,28 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             super(TrackerView);
             this.trackerView = TrackerView;
             this.adapter = adapter;
-            TrackerView.setOnClickListener(this);
+            //TrackerView.setOnClickListener(this);
             TrackerView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            Log.d("stamina", "onClick: " + trackerList.get(getAdapterPosition()));
+            //Log.d("stamina", "onClick: " + trackerList.get(getAdapterPosition()));
         }
 
         @Override
         public boolean onLongClick(View view) {
 
+            //When the tracker is held for a couple seconds it makes a popup menu.
             PopupMenu popupMenu = new PopupMenu(context, trackerView);
             popupMenu.getMenuInflater().inflate(R.menu.main_recyclerview_popup_menu, popupMenu.getMenu());
 
+            //handling options in a menu item click listener
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     CharSequence title = menuItem.getTitle();
+                    //If title equals something, do a function on trackerUpdater. Notify if a change has been made and if necessary.
                     if (title.equals("Edit")) {
                         trackerUpdater.edit(getAdapterPosition());
                     }
@@ -164,7 +175,9 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
                     return false;
                 }
             });
+            //Show the pop up menu
             popupMenu.show();
+            //return from the function
             return false;
         }
     }

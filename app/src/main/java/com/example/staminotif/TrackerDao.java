@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+//Dao for the tracker database, most methods aren't used but could be in the future.
 @Dao
 public interface TrackerDao {
 

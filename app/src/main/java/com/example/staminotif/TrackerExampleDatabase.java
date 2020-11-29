@@ -7,6 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+//Making a trackerexample database.
 @Database(entities = {TrackerExample.class}, version = 1)
 @TypeConverters({Converters.class})
 

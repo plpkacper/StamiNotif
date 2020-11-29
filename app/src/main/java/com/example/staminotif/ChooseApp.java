@@ -38,6 +38,7 @@ import java.util.List;
 
 public class ChooseApp extends AppCompatActivity {
 
+    //Initialise variables
     private TrackerExampleDao trackerExampleDao;
     private TrackerExampleDatabase db;
     List<TrackerExample> examples;
@@ -47,23 +48,27 @@ public class ChooseApp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_app);
 
+        //Set action bar text
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Choose A Template");
+        if (actionBar != null) actionBar.setTitle("Choose A Template");;
 
+        //Create new ArrayList for the example list
         examples = new ArrayList<>();
 
+        //Get trackerexample database and dao
+        //then get all tracker examples from the trackerexample database
         this.db = TrackerExampleDatabase.getDatabase(this);
         this.trackerExampleDao = db.trackerExampleDao();
-
         examples = trackerExampleDao.getAllTrackers();
 
         //Replace with default drawable
+        //Set the first example to be a custom example
+        //This example doesn't need to be stored in the database because I want it to be in here whether the API to get examples is running or not.
         TrackerExample example1 = new TrackerExample(0, R.drawable.dokkan , "Custom", 0);
-
         examples.add(0, example1);
+        //Log.d("internet", "onCreate: " + examples.toString());
 
-        Log.d("internet", "onCreate: " + examples.toString());
-
+        //Create recyclerview dependent on whether the phone is landscape or portrait
         RecyclerView recyclerView = findViewById(R.id.rv_show_presets);
         RecyclerView.Adapter adapter = new AppGridRecyclerViewAdapter(getApplicationContext(), examples);
         recyclerView.setAdapter(adapter);

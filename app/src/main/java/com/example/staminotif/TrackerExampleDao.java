@@ -9,6 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
+//TrackerExample dao, most methods are unused but could be to implement a search function in the choose app screen.
 @Dao
 public interface TrackerExampleDao {
 

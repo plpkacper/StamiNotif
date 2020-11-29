@@ -26,6 +26,7 @@ import java.util.List;
 
 public class SetUpNewApp extends AppCompatActivity {
 
+    //Initialising variables
     private EditText rechargeTime;
     private EditText maxSta;
     private EditText currSta;
@@ -48,6 +49,7 @@ public class SetUpNewApp extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //If the done button in the actionbar is pressed run submitApp method.
         int id = item.getItemId();
         if (id == R.id.done) {
             submitApp();
@@ -56,9 +58,12 @@ public class SetUpNewApp extends AppCompatActivity {
     }
 
     private void submitApp() {
+        //Initialising exceptions (to stop the mainactivity from being started at the end)
         int exceptionCounter = 0;
+        //Creating a new bundle to later set into the intent.
         Bundle tracker = new Bundle();
 
+        //Get text from name field in the activity and if it isn't null put it in the bundle.
         try {
             if (name.getText().toString() != null) {
                 tracker.putString("name", name.getText().toString());
@@ -87,6 +92,7 @@ public class SetUpNewApp extends AppCompatActivity {
             exceptionCounter++;
         }
         try {
+            //If the user sets the current stamina over the maximum stamina, trigger an exception
             if (Integer.parseInt(currSta.getText().toString()) > Integer.parseInt(maxSta.getText().toString())) {
                 Toast.makeText(getApplicationContext(), "Current stamina set above max stamina", Toast.LENGTH_SHORT).show();
                 exceptionCounter++;
@@ -113,6 +119,7 @@ public class SetUpNewApp extends AppCompatActivity {
             tracker.putBoolean("favourite", favourite);
         }
         if (exceptionCounter == 0) {
+            //If there weren't any exceptions put the bundle in the intent and start the main activity as well as finishing this one.
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
             intent.putExtra("tracker", tracker);
             startActivity(intent);
@@ -125,12 +132,14 @@ public class SetUpNewApp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_up_new_app);
 
+        //Initialising variables
         edit = false;
         favourite = false;
         tID = 0;
         imageId = 0;
         imageDir = "";
 
+        //Getting the different UI editTexts & button
         name = findViewById(R.id.et_name);
         rechargeTime = findViewById(R.id.et_staminarecharge);
         maxSta = findViewById(R.id.et_maxsta);
@@ -138,8 +147,10 @@ public class SetUpNewApp extends AppCompatActivity {
         imageView = findViewById(R.id.iv_app_icon);
         search = findViewById(R.id.button_search);
         searchBox = findViewById(R.id.et_search);
+        //Getting action bar to set the title in it later
         ActionBar actionBar = getSupportActionBar();
 
+        //Adding a onclicklistener to run method with contents of the searchbox
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,14 +160,12 @@ public class SetUpNewApp extends AppCompatActivity {
             }
         });
 
+        //If the tracker is an example, set up the variables that are in the example
         if (getIntent().getExtras().containsKey("trackerExample")) {
             TrackerExample example = getIntent().getExtras().getParcelable("trackerExample");
 
             if (example.getName() != null) {
-                actionBar.setTitle("Set Up " + example.getName());
-            }
-            else {
-                actionBar.setTitle("Set Up Your App");
+                actionBar.setTitle("Set Up " + example.getName() + " App");
             }
 
             if (example.getRecharge() > 0) {
@@ -169,9 +178,9 @@ public class SetUpNewApp extends AppCompatActivity {
                 name.setText(example.getName());
             }
             //Not the right way to do it I imagine
-            if (!example.getImageUrl().equals("")) {
-                Drawable d = Drawable.createFromPath(example.getImageUrl());
-                imageDir = example.getImageUrl();
+            if (!example.getImageDir().equals("")) {
+                Drawable d = Drawable.createFromPath(example.getImageDir());
+                imageDir = example.getImageDir();
                 imageView.setImageDrawable(d);
             }
             else if (example.getId() != 0) {
@@ -179,6 +188,7 @@ public class SetUpNewApp extends AppCompatActivity {
                 imageView.setImageResource(example.getId());
             }
         }
+        //If in the intent there is a tracker, set all the variables that can be edited.
         else if (getIntent().getExtras().containsKey("tracker")) {
             edit = true;
             Tracker tracker = getIntent().getExtras().getParcelable("tracker");
@@ -219,6 +229,7 @@ public class SetUpNewApp extends AppCompatActivity {
 
     }
 
+    //This method saves a drawable from the UI to a bitmap file in the files folder of the app.
     private String saveImage(String name) {
         imageView.setDrawingCacheEnabled(true);
         Drawable drawable = imageView.getDrawable();
@@ -245,41 +256,50 @@ public class SetUpNewApp extends AppCompatActivity {
         return imageDir;
     }
 
-    //FIX
+    //Setting image from directory to the imageview that shows the selected apps icon.
     private void setImage(String dir) {
         Log.d("stamina", "setImage: " + dir);
         Drawable d = Drawable.createFromPath(dir);
         imageView.setImageDrawable(d);
     }
 
-    private void lookForApp(String text) {
-        Log.d("stamina", "lookForApp: " + text);
+    //This method looks for an app icon from apps that are on the device
+    //(An api was supposed to be used for this but one could not be found, so this is the alternative)
+    private String lookForApp(String text) {
+        //Log.d("stamina", "lookForApp: " + text);
         int flags = PackageManager.GET_META_DATA |
                 PackageManager.GET_SHARED_LIBRARY_FILES |
                 PackageManager.GET_UNINSTALLED_PACKAGES;
         final PackageManager pm = getPackageManager();
-        //get a list of installed apps.
+        //Get a list of the installed apps
         List<ApplicationInfo> packages = pm.getInstalledApplications(flags);
-
+        //Going through all the apps
         for (ApplicationInfo packageInfo : packages) {
             if ((packageInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1) {
                 //Log.d("stamina", "System App");
             }
+            //If the app is a user installed one get the icon and save it to a file on the phone and set the directory to be so.
             else {
-                Log.d("stamina", "User Installed App");
-                Log.d("stamina", "Installed package :" + packageInfo.packageName);
-                Log.d("stamina", "Name : " + pm.getApplicationLabel(packageInfo));
+                //Log.d("stamina", "User Installed App");
+                //Log.d("stamina", "Installed package :" + packageInfo.packageName);
+                //Log.d("stamina", "Name : " + pm.getApplicationLabel(packageInfo));
+                //Set all text to lower case and check if the app found contains a part of the text in the search field.
                 if (pm.getApplicationLabel(packageInfo).toString().toLowerCase().contains(text.toLowerCase())) {
                     try {
                         Drawable drawable = getApplicationContext().getPackageManager().getApplicationIcon(packageInfo.packageName);
                         imageView.setImageDrawable(drawable);
                         saveImage(pm.getApplicationLabel(packageInfo).toString());
+                        //Returning to stop looking for an app if a similar app has been found
+                        return null;
                     }
                     catch (PackageManager.NameNotFoundException e) {
-                        Toast.makeText(getApplicationContext(), "App not found", Toast.LENGTH_SHORT).show();
+
                     }
                 }
             }
         }
+        //If an app hasn't been found, let the user know.
+        Toast.makeText(getApplicationContext(), "App not found", Toast.LENGTH_SHORT).show();
+        return null;
     }
 }

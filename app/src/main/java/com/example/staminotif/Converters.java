@@ -1,8 +1,8 @@
 package com.example.staminotif;
 
 import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
 
+//Some converters for the Trackers database
 public class Converters {
 
     @TypeConverter
@@ -12,7 +12,7 @@ public class Converters {
 
     @TypeConverter
     public static Long toTimer(Timer timer) {
-        return timer.getStartDate();
+        return timer.getStart();
     }
 
 }

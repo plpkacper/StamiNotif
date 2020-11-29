@@ -2,55 +2,50 @@ package com.example.staminotif;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+//This class is instantiated in every tracker
 public class Timer implements Parcelable {
 
-    private long startDate;
-    private long currentDate;
+    //initiate variables
+    private long start;
+    private long current;
 
     Timer() {
-        /*For testing purposes
-        String fakeDate = "2020/11/09 10:00:00";
-        this.formatter2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        try {
-            this.startDate = formatter2.parse(fakeDate);
-        } catch (ParseException e) {
-
-        }
-        */
-        this.startDate = new Date().getTime();
+        //get startDate long (time in milliseconds)
+        this.start = new Date().getTime();
     }
 
+    //Used for the conversion back from tracker databse
     Timer(Long value) {
-        this.startDate = value;
+        this.start = value;
     }
 
+    //Getting difference in minutes from the start value to the time now.
     public int getDifference(){
-        this.currentDate = new Date().getTime();
-        long difference = Math.abs(currentDate - startDate);
+        this.current = new Date().getTime();
+        long difference = Math.abs(current - start);
         long differenceMinutes = TimeUnit.MILLISECONDS.toMinutes(difference);
         int diff = (int)differenceMinutes;
         //Log.d("stamina", "Difference In Minutes: " + (diff));
         return diff;
     }
 
+    //This updates the date value so that if the apps stamina is full, after the stamina isn't full anymore it starts counting from when it isn't full and not when it was last full.
     public void updateDate() {
-        this.startDate = new Date().getTime();
+        this.start = new Date().getTime();
     }
 
-    public long getStartDate() {
-        return startDate;
+    public long getStart() {
+        return start;
     }
 
+    //Parcelable functions (that aren't used anymore)
     protected Timer(Parcel in) {
-        startDate = in.readLong();
-        currentDate = in.readLong();
+        start = in.readLong();
+        current = in.readLong();
     }
 
     @Override
@@ -60,8 +55,8 @@ public class Timer implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(startDate);
-        dest.writeLong(currentDate);
+        dest.writeLong(start);
+        dest.writeLong(current);
     }
 
     @SuppressWarnings("unused")
