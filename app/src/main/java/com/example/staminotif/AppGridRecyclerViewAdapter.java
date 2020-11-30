@@ -92,7 +92,7 @@ public class AppGridRecyclerViewAdapter extends RecyclerView.Adapter<AppGridRecy
             intent.putExtra("trackerExample", examplesList.get(getAdapterPosition()));
             context.startActivity(intent);
             //Finish this activity so if you press the back button on any app you don't go back to here instead of the main screen.
-            ((Activity)context).finish();
+            //((Activity)context).finish();
         }
     }
 }

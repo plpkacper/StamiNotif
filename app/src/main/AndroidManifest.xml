@@ -12,7 +12,7 @@
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".SetUpNewApp"
-            android:parentActivityName=".ChooseApp"/>
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".ChooseApp"
             android:parentActivityName=".MainActivity" />

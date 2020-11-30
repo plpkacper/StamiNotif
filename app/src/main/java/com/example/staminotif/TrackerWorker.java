@@ -68,6 +68,7 @@ public class TrackerWorker extends Worker {
     public Result doWork() {
         trackers = trackerUpdater.updateTrackers();
         sendNotification();
+        sendNotification();
         return Result.success();
     }
 
@@ -84,10 +85,12 @@ public class TrackerWorker extends Worker {
                 Log.d("notifications", "sendNotification: Update Perm!");
                 updatePermanent(i);
             }
+            Log.d("notifications", "sendNotification: " + sentTrackers);
             //Checking if the tracker is at max and hasn't had a notification sent yet.
             if(trackers.get(i).atMax && !sentTrackers.contains(i)) {
                 Log.d("notifications", "sendNotification: Send full!");
                 sentTrackers.add(i);
+                Log.d("notifications", "sendNotification: " + sentTrackers);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TEMP_ID)
                         .setSmallIcon(R.drawable.notification_icon)
                         .setContentTitle(trackers.get(i).getName())
