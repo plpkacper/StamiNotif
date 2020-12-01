@@ -94,7 +94,7 @@ public class SetUpNewApp extends AppCompatActivity {
         try {
             //If the user sets the current stamina over the maximum stamina, trigger an exception
             if (Integer.parseInt(currSta.getText().toString()) > Integer.parseInt(maxSta.getText().toString())) {
-                Toast.makeText(getApplicationContext(), "Current stamina set above max stamina", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Current stamina set above max stamina, this is not possible", Toast.LENGTH_SHORT).show();
                 exceptionCounter++;
             }
             if (Integer.parseInt(currSta.getText().toString()) != 0) {

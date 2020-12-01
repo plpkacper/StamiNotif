@@ -2,9 +2,11 @@ package com.example.staminotif;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -84,12 +86,26 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
         TextView staminaAmount = holder.trackerView.findViewById(R.id.tv_showstamina);
         staminaAmount.setText(trackerList.get(position).getCurrSta() + "/" + trackerList.get(position).getMaxSta());
 
-        //Getting the decrement buttons
-        Button decrement1 = holder.trackerView.findViewById(R.id.button__1sta);
-        Button decrement5 = holder.trackerView.findViewById(R.id.button__5sta);
-        Button decrement10 = holder.trackerView.findViewById(R.id.button__10sta);
+        //Share button that allows the user to text someone with their tracker information
+        Button share = holder.trackerView.findViewById(R.id.but_share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String textToSend = trackerList.get(position).getName() + " has " + trackerList.get(position).getCurrSta() + " out of " + trackerList.get(position).getMaxSta() + "!";
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                sendIntent.setData(Uri.parse("sms:" ));
+                sendIntent.putExtra("sms_body", textToSend);
+                context.startActivity(sendIntent);
+            }
+        });
 
-        //Giving each button an onclicklistener.
+        //Getting the decrement buttons
+        Button decrement1 = holder.trackerView.findViewById(R.id.but_sta_one);
+        Button decrement5 = holder.trackerView.findViewById(R.id.but_sta_five);
+        Button decrement10 = holder.trackerView.findViewById(R.id.but_sta_ten);
+
+        //Giving each button an onclicklistener
         decrement1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

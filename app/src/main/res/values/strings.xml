@@ -32,4 +32,5 @@
     <string name="notif_button_2">What value should the second notification button have?</string>
     <string name="button_apply">Apply</string>
     <string name="tv_search_tip">Search your apps name to find the icon.</string>
+    <string name="share">Share</string>
 </resources>

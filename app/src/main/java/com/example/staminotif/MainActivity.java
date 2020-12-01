@@ -225,6 +225,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //Put in the sharedprefs file the new update time.
                             editor.putLong("prevRequest", new Date().getTime());
                             editor.apply();
+                            //Show the user that updating the database is completed.
+                            Toast.makeText(getApplicationContext(), "Updating Database Complete", Toast.LENGTH_SHORT).show();
                         }
                     },
                     new Response.ErrorListener() {
@@ -237,8 +239,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Make and add request to queue
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
             queue.add(stringRequest);
-            //Show the user that the
-            Toast.makeText(getApplicationContext(), "Updating Database Complete", Toast.LENGTH_SHORT).show();
         }
     }
 
