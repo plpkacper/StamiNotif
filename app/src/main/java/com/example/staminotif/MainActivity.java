@@ -126,13 +126,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Tracker tracker = new Tracker(bundle.getInt("id", 0), bundle.getString("name", "This somehow did not work"), bundle.getInt("currSta", 0), bundle.getInt("maxSta", 1), bundle.getInt("recharge", 1), bundle.getString("imageResource", ""), bundle.getBoolean("favourite"), bundle.getInt("imageId", 0));
 
         //If the tracker should replace a previous tracker (when a tracker is updated by the user)
-        if (bundle.containsKey("replace")) trackerUpdater.update(tracker);
+        if (bundle.containsKey("replace")) {
+            trackerUpdater.update(tracker);
+        }
         //Else just add the tracker as a new tracker.
         else {
             trackers.add(tracker);
+            //Saving the local trackers variable to database.
+            trackerUpdater.saveToDatabase();
         }
-        //Saving the local trackers variable to database.
-        trackerUpdater.saveToDatabase();
         //Getting all trackers back from the database. (this is done mostly for reliability, as there is a worker thread in the background which could be messing with the tracker update).
         trackers = trackerUpdater.updateTrackers();
     }

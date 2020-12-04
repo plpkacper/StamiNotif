@@ -100,9 +100,8 @@ public class TrackerUpdater {
     //Method to update a particular tracker
     public List<Tracker> update(Tracker tracker) {
         //Getting from database, updating, saving to database.
-        trackers = getFromDatabase();
         trackerDao.update(tracker);
-        trackers = saveToDatabase();
+        trackers = getFromDatabase();
         return trackers;
     }
 
