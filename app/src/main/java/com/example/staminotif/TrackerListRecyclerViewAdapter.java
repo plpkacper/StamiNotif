@@ -110,9 +110,9 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             @Override
             public void onClick(View view) {
                 trackerList.get(position).decrementSta1();
-                notifyItemChanged(position);
                 trackerUpdater.saveToDatabase();
-                trackerUpdater.updateTrackers();
+                trackerList = trackerUpdater.updateTrackers();
+                notifyItemChanged(position);
             }
         });
 
@@ -120,9 +120,9 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             @Override
             public void onClick(View view) {
                 trackerList.get(position).decrementSta5();
-                notifyItemChanged(position);
                 trackerUpdater.saveToDatabase();
-                trackerUpdater.updateTrackers();
+                trackerList = trackerUpdater.updateTrackers();
+                notifyItemChanged(position);
             }
         });
 
@@ -130,9 +130,9 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
             @Override
             public void onClick(View view) {
                 trackerList.get(position).decrementSta10();
-                notifyItemChanged(position);
                 trackerUpdater.saveToDatabase();
-                trackerUpdater.updateTrackers();
+                trackerList = trackerUpdater.updateTrackers();
+                notifyItemChanged(position);
             }
         });
     }
