@@ -64,7 +64,7 @@ public class ChooseApp extends AppCompatActivity {
         //Replace with default drawable
         //Set the first example to be a custom example
         //This example doesn't need to be stored in the database because I want it to be in here whether the API to get examples is running or not.
-        TrackerExample example1 = new TrackerExample(0, R.drawable.dokkan , "Custom", 0);
+        TrackerExample example1 = new TrackerExample(0, R.drawable.custom , "Custom", 0);
         examples.add(0, example1);
         //Log.d("internet", "onCreate: " + examples.toString());
 
