@@ -3,6 +3,7 @@ package com.example.staminotif;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -26,6 +27,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -51,8 +54,16 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
     @Override
     public TrackerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
+        View itemView;
         //Making a view holder
-        View itemView = LayoutInflater.from(context).inflate(R.layout.game_list_view_item_expanded, parent, false);
+        int orientation = context.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            itemView = LayoutInflater.from(context).inflate(R.layout.game_list_view_item_expanded_horizontal, parent, false);
+        }
+        else {
+            itemView = LayoutInflater.from(context).inflate(R.layout.game_list_view_item_expanded, parent, false);
+        }
+
         TrackerViewHolder viewHolder = new TrackerViewHolder(itemView, this);
 
         return viewHolder;
@@ -186,7 +197,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
                         trackerUpdater.saveToDatabase();
                         trackerList = trackerUpdater.updateTrackers();
                         Log.d("stamina", "onMenuItemClick: " + trackerList.get(getAdapterPosition()));
-                        adapter.notifyItemChanged(getAdapterPosition());
+                        adapter.notifyDataSetChanged();
                     }
                     return false;
                 }

@@ -108,10 +108,11 @@ public class SetUpNewApp extends AppCompatActivity {
         if (tID >= 0) {
             tracker.putInt("id", tID);
         }
+        Log.d("stamina", "onClick: " + imageDir);
         if (!imageDir.equals("")) {
             tracker.putString("imageResource", imageDir);
         }
-        if (imageId != 0) {
+        if (imageId != 0 && imageDir.equals("")) {
             tracker.putInt("imageId", imageId);
         }
         if (edit) {
@@ -155,7 +156,7 @@ public class SetUpNewApp extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (searchBox.getText().toString() != "") {
-                    lookForApp(searchBox.getText().toString());
+                    imageDir = lookForApp(searchBox.getText().toString());
                 }
             }
         });
@@ -288,9 +289,9 @@ public class SetUpNewApp extends AppCompatActivity {
                     try {
                         Drawable drawable = getApplicationContext().getPackageManager().getApplicationIcon(packageInfo.packageName);
                         imageView.setImageDrawable(drawable);
-                        saveImage(pm.getApplicationLabel(packageInfo).toString());
+                        String imageDir = saveImage(pm.getApplicationLabel(packageInfo).toString());
                         //Returning to stop looking for an app if a similar app has been found
-                        return null;
+                        return imageDir;
                     }
                     catch (PackageManager.NameNotFoundException e) {
 
@@ -300,6 +301,6 @@ public class SetUpNewApp extends AppCompatActivity {
         }
         //If an app hasn't been found, let the user know.
         Toast.makeText(getApplicationContext(), "App not found", Toast.LENGTH_SHORT).show();
-        return null;
+        return "";
     }
 }
