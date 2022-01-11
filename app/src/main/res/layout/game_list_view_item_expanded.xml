@@ -101,16 +101,6 @@
                 android:text="@string/decrement10" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/but_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/share"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_showstamina"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_item_app_name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

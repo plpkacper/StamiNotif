@@ -1,40 +1,25 @@
 package com.example.staminotif;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<TrackerListRecyclerViewAdapter.TrackerViewHolder> {
 
@@ -70,7 +55,7 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TrackerViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull TrackerViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
         //Setting the instances colour to be different if it is a favourite
         if (trackerList.get(position).isFavourite()) {
@@ -97,26 +82,12 @@ public class TrackerListRecyclerViewAdapter extends RecyclerView.Adapter<Tracker
         TextView staminaAmount = holder.trackerView.findViewById(R.id.tv_showstamina);
         staminaAmount.setText(trackerList.get(position).getCurrSta() + "/" + trackerList.get(position).getMaxSta());
 
-        //Share button that allows the user to text someone with their tracker information
-        Button share = holder.trackerView.findViewById(R.id.but_share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String textToSend = trackerList.get(position).getName() + " has " + trackerList.get(position).getCurrSta() + " out of " + trackerList.get(position).getMaxSta() + "!";
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                sendIntent.setData(Uri.parse("sms:" ));
-                sendIntent.putExtra("sms_body", textToSend);
-                context.startActivity(sendIntent);
-            }
-        });
-
         //Getting the decrement buttons
         Button decrement1 = holder.trackerView.findViewById(R.id.but_sta_one);
         Button decrement5 = holder.trackerView.findViewById(R.id.but_sta_five);
         Button decrement10 = holder.trackerView.findViewById(R.id.but_sta_ten);
 
-        //Giving each button an onclicklistener
+        //Giving each button an OnClickListener
         decrement1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
